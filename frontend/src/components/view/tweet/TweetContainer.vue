@@ -114,80 +114,64 @@ import showStatusToast from '../../mixin/showStatusToast';
 
 export default {
     name: 'TweetContainer',
-
     components: {
         Comment,
         NewCommentForm,
         EditTweetForm,
-        DefaultAvatar,
+        DefaultAvatar
     },
-
     mixins: [showStatusToast],
-
     data: () => ({
         isEditTweetModalActive: false,
         isImageModalActive: false
     }),
-
     async created() {
         try {
             await this.fetchTweetById(this.$route.params.id);
-
             this.fetchComments(this.tweet.id);
         } catch (error) {
             console.error(error.message);
         }
     },
-
     computed: {
         ...mapGetters('auth', {
             user: 'getAuthenticatedUser'
         }),
-
         ...mapGetters('tweet', [
             'getTweetById',
             'isTweetOwner',
             'tweetIsLikedByUser'
         ]),
-
         ...mapGetters('comment', [
             'getCommentsByTweetId',
             'tweetIsCommentedByUser'
         ]),
-
         tweet() {
             return this.getTweetById(this.$route.params.id);
         },
     },
-
     methods: {
         ...mapActions('tweet', [
             'fetchTweetById',
             'deleteTweet',
             'likeOrDislikeTweet'
         ]),
-
         ...mapActions('comment', [
             'fetchComments',
         ]),
-
         onEditTweet() {
             this.isEditTweetModalActive = true;
         },
-
         onDeleteTweet() {
-            this.$dialog.confirm({
+            this.$buefy.dialog.confirm({
                 title: 'Deleting tweet',
                 message: 'Are you sure you want to <b>delete</b> your tweet? This action cannot be undone.',
                 confirmText: 'Delete Tweet',
                 type: 'is-danger',
-
                 onConfirm: async () => {
                     try {
                         await this.deleteTweet(this.tweet.id);
-
                         this.showSuccessMessage('Tweet deleted!');
-
                         this.$router.push({ name: 'feed' }).catch(() => {});
                     } catch {
                         this.showErrorMessage('Unable to delete tweet!');
@@ -195,11 +179,9 @@ export default {
                 }
             });
         },
-
         showImageModal() {
             this.isImageModalActive = true;
         },
-
         async onLikeOrDislikeTweet() {
             try {
                 await this.likeOrDislikeTweet({
@@ -217,16 +199,13 @@ export default {
 <style lang="scss" scoped>
 @import "~bulma/sass/utilities/initial-variables";
 @import "../../../styles/common";
-
 .tweet-image {
     margin: 12px 0 0 0;
-
     img {
         width: auto;
         cursor: pointer;
     }
 }
-
 .buttons {
     .button {
         @media screen and (max-width: $tablet) {
@@ -234,22 +213,18 @@ export default {
         }
     }
 }
-
 .tweet-text {
     max-width: 100%;
 }
-
 .activity {
     margin-bottom: 16px;
 }
-
 .content {
     figure {
         margin-top: 0;
         margin-bottom: .75rem;
     }
 }
-
 .column {
     padding-bottom: 0;
 }
