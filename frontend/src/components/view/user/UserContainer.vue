@@ -1,6 +1,11 @@
 <template>
     <div class="user-container">
-        <TweetPreviewList :tweets="tweets" @infinite="infiniteHandler" />
+        <TweetPreviewList
+            :tweets="tweets"
+            @infinite="infiniteHandler"
+            :cards-view-seen="cardsViewSeen"
+            :media-view-seen="mediaViewSeen"
+        />
         <NoContent :show="noContent" title="No tweets yet :)" />
     </div>
 </template>
@@ -25,6 +30,8 @@ export default {
         tweets: [],
         page: 1,
         noContent: false,
+        mediaViewSeen: true,
+        cardsViewSeen: false
     }),
 
     async created() {

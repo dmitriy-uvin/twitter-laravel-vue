@@ -12,10 +12,29 @@
             >
                 Tweet :)
             </b-button>
+            <div class="buttons">
+                <button
+                    class="btn-left"
+                    :class="{ 'btn-active': cardsViewSeen }"
+                    @click="changeViewToCards"
+                >
+                    <img src="https://img.icons8.com/ios-filled/24/000000/health-data.png" />
+                </button>
+                <button
+                    class="btn-right"
+                    :class="{ 'btn-active': mediaViewSeen }"
+                    @click="changeViewToMedia"
+                >
+                    <img src="https://img.icons8.com/ios-filled/24/000000/menu.png" />
+                </button>
+            </div>
         </div>
-
-        <TweetPreviewList :tweets="tweets" @infinite="infiniteHandler" />
-
+        <TweetPreviewList
+            :tweets="tweets"
+            @infinite="infiniteHandler"
+            :cards-view-seen="cardsViewSeen"
+            :media-view-seen="mediaViewSeen"
+        />
         <b-modal :active.sync="isNewTweetModalActive" has-modal-card>
             <NewTweetForm />
         </b-modal>
@@ -43,6 +62,8 @@ export default {
     data: () => ({
         isNewTweetModalActive: false,
         page: 1,
+        mediaViewSeen: true,
+        cardsViewSeen: false
     }),
 
     async created() {
@@ -76,6 +97,15 @@ export default {
             'fetchTweets',
         ]),
 
+        changeViewToMedia() {
+            this.mediaViewSeen = true;
+            this.cardsViewSeen = false;
+        },
+        changeViewToCards() {
+            this.mediaViewSeen = false;
+            this.cardsViewSeen = true;
+        },
+
         onAddTweetClick() {
             this.showAddTweetModal();
         },
@@ -100,11 +130,52 @@ export default {
             }
         },
     },
+    mounted() {
+        if (localStorage.mediaViewSeen === 'true') {
+            this.mediaViewSeen = true;
+            this.cardsViewSeen = false;
+        }
+        if (localStorage.cardsViewSeen === 'true') {
+            this.mediaViewSeen = false;
+            this.cardsViewSeen = true;
+        }
+    },
+
+    watch: {
+        mediaViewSeen(newMediaViewSeen) {
+            localStorage.mediaViewSeen = newMediaViewSeen;
+        },
+        cardsViewSeen(newCardsViewSeen) {
+            localStorage.cardsViewSeen = newCardsViewSeen;
+        },
+    }
+
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @import '~bulma/sass/utilities/initial-variables';
+
+.buttons {
+    float: right;
+}
+.btn-left, .btn-right {
+    border: none;
+    padding: 10px;
+    outline: none;
+}
+
+.btn-left {
+    border-radius: 5px 0 0 5px;
+}
+
+.btn-right{
+    border-radius: 0 5px 5px 0;
+}
+
+.btn-active{
+    background: #ff3860;
+}
 
 .navigation {
     padding: 10px 0;
@@ -127,4 +198,5 @@ export default {
         font-size: 1rem;
     }
 }
+
 </style>

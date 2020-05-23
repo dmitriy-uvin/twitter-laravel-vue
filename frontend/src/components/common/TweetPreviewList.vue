@@ -6,6 +6,8 @@
                     :key="tweet.id"
                     :tweet="tweet"
                     @click="onTweetClick"
+                    :cards-view-seen="cardsViewSeen"
+                    :media-view-seen="mediaViewSeen"
                 />
             </template>
         </transition-group>
@@ -29,8 +31,13 @@ export default {
             type: Array,
             required: true
         },
+        mediaViewSeen: {
+            type: Boolean,
+        },
+        cardsViewSeen: {
+            type: Boolean,
+        }
     },
-
     components: {
         TweetPreview,
         InfiniteLoading,
@@ -48,7 +55,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .tweets-container {
     padding-bottom: 20px;
 }
