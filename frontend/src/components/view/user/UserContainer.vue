@@ -78,6 +78,16 @@ export default {
             }
         },
     },
+    mounted() {
+        if (localStorage.getItem('mediaViewSeen') === 'true') {
+            this.mediaViewSeen = true;
+            this.cardsViewSeen = false;
+        }
+        if (localStorage.getItem('cardsViewSeen') === 'true') {
+            this.mediaViewSeen = false;
+            this.cardsViewSeen = true;
+        }
+    },
 };
 </script>
 

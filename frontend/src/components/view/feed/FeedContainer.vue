@@ -131,11 +131,11 @@ export default {
         },
     },
     mounted() {
-        if (localStorage.mediaViewSeen === 'true') {
+        if (localStorage.getItem('mediaViewSeen') === 'true') {
             this.mediaViewSeen = true;
             this.cardsViewSeen = false;
         }
-        if (localStorage.cardsViewSeen === 'true') {
+        if (localStorage.getItem('cardsViewSeen') === 'true') {
             this.mediaViewSeen = false;
             this.cardsViewSeen = true;
         }
@@ -143,10 +143,10 @@ export default {
 
     watch: {
         mediaViewSeen(newMediaViewSeen) {
-            localStorage.mediaViewSeen = newMediaViewSeen;
+            localStorage.setItem('mediaViewSeen', newMediaViewSeen);
         },
         cardsViewSeen(newCardsViewSeen) {
-            localStorage.cardsViewSeen = newCardsViewSeen;
+            localStorage.setItem('cardsViewSeen', newCardsViewSeen);
         },
     }
 
