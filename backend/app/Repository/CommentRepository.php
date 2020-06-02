@@ -47,4 +47,9 @@ final class CommentRepository implements Paginable
 
         return $comment;
     }
+
+    public function delete(Comment $comment): ?bool
+    {
+        return $comment->delete();
+    }
 }
