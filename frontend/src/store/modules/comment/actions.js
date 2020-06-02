@@ -1,13 +1,12 @@
 import api from '@/api/Api';
 import { commentMapper } from '@/services/Normalizer';
 import { SET_LOADING } from '../../mutationTypes';
-import { SET_COMMENTS, ADD_COMMENT } from './mutationTypes';
-import { INCREMENT_COMMENTS_COUNT } from '../tweet/mutationTypes';
+import { SET_COMMENTS, ADD_COMMENT, DELETE_COMMENT } from './mutationTypes';
+import { DECREMENT_COMMENTS_COUNT, INCREMENT_COMMENTS_COUNT } from '../tweet/mutationTypes';
 
 export default {
     async fetchComments({ commit }, tweetId) {
         commit(SET_LOADING, true, { root: true });
-
         try {
             const comments = await api.get(`/tweets/${tweetId}/comments`, {
                 direction: 'asc',
@@ -41,4 +40,23 @@ export default {
             return Promise.reject(error);
         }
     },
+
+    async deleteComment({ commit, dispatch }, comment) {
+        commit(SET_LOADING, true, { root: true });
+
+        try {
+            await api.delete(`/comments/${comment.id}`);
+
+            commit(DELETE_COMMENT, comment);
+            dispatch('fetchComments', comment.tweetId);
+            commit(`tweet/${DECREMENT_COMMENTS_COUNT}`, comment.tweetId, { root: true });
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.resolve();
+        } catch (error) {
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.reject(error);
+        }
+    }
 };
