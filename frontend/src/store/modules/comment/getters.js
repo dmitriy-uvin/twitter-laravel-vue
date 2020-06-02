@@ -16,4 +16,6 @@ export default {
     tweetIsCommentedByUser: (state, getters) => (tweetId, userId) => getters
         .getCommentsByTweetId(tweetId)
         .find(comment => comment.authorId === userId),
+
+    isCommentOwner: () => (authorId, userId) => authorId === userId
 };
