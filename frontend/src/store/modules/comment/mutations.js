@@ -1,5 +1,5 @@
 import { commentMapper } from '@/services/Normalizer';
-import { SET_COMMENTS, ADD_COMMENT } from './mutationTypes';
+import { SET_COMMENTS, ADD_COMMENT, DELETE_COMMENT } from './mutationTypes';
 
 export default {
     [SET_COMMENTS]: (state, comments) => {
@@ -21,4 +21,7 @@ export default {
             [comment.id]: commentMapper(comment)
         };
     },
+    [DELETE_COMMENT]: (state, comment) => {
+        delete state.comments[comment.id];
+    }
 };
