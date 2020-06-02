@@ -8,7 +8,11 @@ import {
     faShare,
     faUpload,
     faSignOutAlt,
-    faCog
+    faCog,
+    faEllipsisH,
+    faEdit,
+    faTrash,
+    faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
 import {
     faTwitter,
@@ -31,6 +35,10 @@ library.add(
     faCog,
     faTwitterSquare,
     faUpload,
+    faEllipsisH,
+    faEdit,
+    faTrash,
+    faExclamationCircle
 );
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
