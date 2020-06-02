@@ -85,6 +85,7 @@
                     <Comment
                         :key="comment.id"
                         :comment="comment"
+                        :tweet-id="tweet.id"
                     />
                 </template>
 
