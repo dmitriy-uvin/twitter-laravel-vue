@@ -6,11 +6,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Action\Comment\AddCommentAction;
 use App\Action\Comment\AddCommentRequest;
+use App\Action\Comment\DeleteCommentAction;
+use App\Action\Comment\DeleteCommentRequest;
 use App\Action\Comment\GetCommentByIdAction;
 use App\Action\Comment\GetCommentCollectionAction;
 use App\Action\Comment\GetCommentCollectionByTweetIdAction;
 use App\Action\GetByIdRequest;
 use App\Action\GetCollectionRequest;
+use App\Entity\Comment;
 use App\Http\Controllers\ApiController;
 use App\Http\Presenter\CommentAsArrayPresenter;
 use App\Http\Request\Api\AddCommentHttpRequest;
@@ -25,19 +28,22 @@ final class CommentController extends ApiController
     private $getCommentByIdAction;
     private $addCommentAction;
     private $getCommentCollectionByTweetIdAction;
+    private $deleteCommentAction;
 
     public function __construct(
         GetCommentCollectionAction $getCommentCollectionAction,
         CommentAsArrayPresenter $presenter,
         GetCommentByIdAction $commentByIdAction,
         AddCommentAction $addCommentAction,
-        GetCommentCollectionByTweetIdAction $getCommentCollectionByTweetIdAction
+        GetCommentCollectionByTweetIdAction $getCommentCollectionByTweetIdAction,
+        DeleteCommentAction $deleteCommentAction
     ) {
         $this->getCommentCollectionAction = $getCommentCollectionAction;
         $this->presenter = $presenter;
         $this->getCommentByIdAction = $commentByIdAction;
         $this->addCommentAction = $addCommentAction;
         $this->getCommentCollectionByTweetIdAction = $getCommentCollectionByTweetIdAction;
+        $this->deleteCommentAction = $deleteCommentAction;
     }
 
     public function getCommentCollection(CollectionHttpRequest $request): ApiResponse
@@ -88,5 +94,16 @@ final class CommentController extends ApiController
         );
 
         return $this->createPaginatedResponse($response->getPaginator(), $this->presenter);
+    }
+
+    public function deleteCommentById(string $id): ApiResponse
+    {
+        $this->deleteCommentAction->execute(
+            new DeleteCommentRequest(
+                (int)$id
+            )
+        );
+
+        return $this->createDeletedResponse();
     }
 }
