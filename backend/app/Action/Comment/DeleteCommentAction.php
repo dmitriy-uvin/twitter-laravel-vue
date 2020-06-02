@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Action\Comment;
 
+use App\Exceptions\CommentNotFoundException;
 use App\Repository\CommentRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -24,7 +25,7 @@ class DeleteCommentAction
         try {
             $comment = $this->commentRepository->getById($request->getId());
         } catch (ModelNotFoundException $e) {
-            throw new Exception();
+            throw new CommentNotFoundException();
         }
 
         if($comment->author_id !== Auth::id()) {
