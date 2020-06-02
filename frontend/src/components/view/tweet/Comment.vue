@@ -19,6 +19,28 @@
                     <strong>
                         {{ comment.author.firstName }} {{ comment.author.lastName }}
                     </strong>
+                    <span>{{ comment.author.id }}</span>
+                    <b-dropdown
+                        aria-role="menu"
+                        position="is-bottom-left"
+                        class="comment-menu"
+                        v-if="isCommentOwner(comment.author.id, user.id)"
+                    >
+                        <p slot="trigger" role="button">
+                            <b-icon pack="fa" icon="ellipsis-h" />
+                        </p>
+                        <b-dropdown-item aria-role="menuitem">
+                            <b-icon pack="fa" icon="edit" />
+                            <button class="dropdown-item-text">Edit</button>
+                        </b-dropdown-item>
+
+                        <hr class="dropdown-divider">
+
+                        <b-dropdown-item aria-role="menuitem">
+                            <b-icon pack="fa" icon="trash" />
+                            <button class="dropdown-item-text" @click="onDeleteComment">Delete</button>
+                        </b-dropdown-item>
+                    </b-dropdown>
                     <br>
                     {{ comment.body }}
                     <br>
@@ -32,29 +54,78 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 import DefaultAvatar from '../../common/DefaultAvatar.vue';
+import showStatusToast from '../../mixin/showStatusToast';
+
 
 export default {
     name: 'Comment',
-
     components: {
         DefaultAvatar,
     },
-
+    mixins: [showStatusToast],
+    computed: {
+        ...mapGetters('auth', {
+            user: 'getAuthenticatedUser'
+        }),
+        ...mapGetters('comment', [
+            'isCommentOwner'
+        ])
+    },
     props: {
         comment: {
             type: Object,
             required: true,
-        },
+        }
+    },
+    methods: {
+        ...mapActions('comment', [
+            'deleteComment'
+        ]),
+        onDeleteComment() {
+            this.$buefy.dialog.confirm({
+                title: 'Deleting comment',
+                message: 'Are you sure you want to <b>delete</b> your comment? This action cannot be undone.',
+                confirmText: 'Delete comment',
+                type: 'is-danger',
+                onConfirm: async () => {
+                    try {
+                        const currentTweetId = this.comment.tweetId;
+                        await this.deleteComment(this.comment);
+                        this.showSuccessMessage('Comment deleted!');
+                        this.$router.push({ path: `/tweets/${currentTweetId}` }).catch(() => {});
+                    } catch {
+                        this.showErrorMessage('Unable to delete comment!');
+                    }
+                }
+            });
+        }
     },
 };
 </script>
 
 <style lang="scss" scoped>
+
+.comment-menu {
+    float: right;
+    cursor: pointer;
+}
+.dropdown-item-text{
+    font-size: 16px;
+    margin-left: 5px;
+    vertical-align: 15%;
+}
 nav {
     margin-left: -8px;
 }
-
+button {
+    outline: none;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+}
 .content {
     p {
         margin-bottom: 0;
