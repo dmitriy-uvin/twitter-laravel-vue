@@ -79,14 +79,14 @@ export default {
         }
     }
     @media (min-width: 500px) and (max-width: 768px) {
-        .col-f {
+        .col-thirds {
             width: 49%;
             display: inline-block;
             margin-left: 1%;
         }
     }
     @media (max-width: 499px) {
-        .col-f {
+        .col-thirds {
             width: 100%;
         }
     }
