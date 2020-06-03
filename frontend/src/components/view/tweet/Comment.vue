@@ -19,7 +19,6 @@
                     <strong>
                         {{ comment.author.firstName }} {{ comment.author.lastName }}
                     </strong>
-                    <span>{{ comment.author.id }}</span>
                     <b-dropdown
                         aria-role="menu"
                         position="is-bottom-left"
