@@ -57,7 +57,6 @@ import { mapGetters, mapActions } from 'vuex';
 import DefaultAvatar from '../../common/DefaultAvatar.vue';
 import showStatusToast from '../../mixin/showStatusToast';
 
-
 export default {
     name: 'Comment',
     components: {
