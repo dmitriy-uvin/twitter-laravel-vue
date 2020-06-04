@@ -93,7 +93,7 @@ export default {
                         const currentTweetId = this.comment.tweetId;
                         await this.deleteComment(this.comment);
                         this.showSuccessMessage('Comment deleted!');
-                        this.$router.push({ path: `/tweets/${currentTweetId}` }).catch(() => {});
+                        this.$router.push({ name: 'tweet-page', params: { id: currentTweetId } }).catch(() => {});
                     } catch {
                         this.showErrorMessage('Unable to delete comment!');
                     }
