@@ -23,6 +23,22 @@ export default {
         }
     },
 
+    async fetchAllComments({ commit }) {
+        commit(SET_LOADING, true, { root: true });
+
+        try {
+            const comments = await api.get('/comments');
+
+            commit(SET_COMMENTS, comments);
+            commit(SET_LOADING, false, { root: true });
+            return Promise.resolve();
+        } catch (error) {
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.reject(error);
+        }
+    },
+
     async addComment({ commit }, { tweetId, text }) {
         commit(SET_LOADING, true, { root: true });
 
