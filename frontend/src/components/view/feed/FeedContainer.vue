@@ -51,50 +51,49 @@ import NewTweetForm from './NewTweetForm.vue';
 
 export default {
     name: 'FeedContainer',
-
     mixins: [showStatusToast],
-
     components: {
         TweetPreviewList,
         NewTweetForm,
     },
-
     data: () => ({
         isNewTweetModalActive: false,
         page: 1,
         mediaViewSeen: true,
         cardsViewSeen: false
     }),
-
     async created() {
         try {
             await this.fetchTweets({
                 page: 1
             });
+            await this.fetchAllComments();
         } catch (error) {
             this.showErrorMessage(error.message);
         }
-
         const channel = pusher.subscribe('private-tweets');
-
         channel.bind('tweet.added', (data) => {
             this.$store.commit(`tweet/${SET_TWEET}`, data.tweet);
         });
     },
-
     beforeDestroy() {
         pusher.unsubscribe('private-tweets');
     },
-
     computed: {
         ...mapGetters('tweet', {
             tweets: 'tweetsSortedByCreatedDate'
         }),
+        ...mapGetters('comment', [
+            'getCommentsByTweetId'
+        ]),
     },
 
     methods: {
         ...mapActions('tweet', [
             'fetchTweets',
+        ]),
+        ...mapActions('comment', [
+            'fetchAllComments'
         ]),
 
         changeViewToMedia() {
@@ -147,7 +146,7 @@ export default {
         },
         cardsViewSeen(newCardsViewSeen) {
             localStorage.setItem('cardsViewSeen', newCardsViewSeen);
-        },
+        }
     }
 
 };
