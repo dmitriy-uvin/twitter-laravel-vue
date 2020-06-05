@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-card">
+    <div class="modal-card" @keyup.ctrl.exact.enter="save">
         <header class="modal-card-head">
             <p class="modal-card-title">Edit Comment</p>
         </header>
@@ -64,10 +64,10 @@ export default {
                     return;
                 }
 
-                // await this.uploadCommentImage({
-                //     id: this.comment.id,
-                //     imageFile: this.image
-                // });
+                await this.uploadCommentImage({
+                    id: this.comment.id,
+                    imageFile: this.image
+                });
 
                 this.$parent.close();
                 this.showSuccessMessage('Comment updated!');
