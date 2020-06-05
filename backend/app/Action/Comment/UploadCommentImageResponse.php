@@ -6,7 +6,7 @@ namespace App\Action\Comment;
 
 use App\Entity\Comment;
 
-class UploadCommentImageResponse
+final class UploadCommentImageResponse
 {
     private $comment;
 

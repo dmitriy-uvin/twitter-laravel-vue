@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 
-class UploadCommentImageAction
+final class UploadCommentImageAction
 {
     private $commentRepository;
 
@@ -42,7 +42,7 @@ class UploadCommentImageAction
 
         $comment->image_url = Storage::url($filePath);
 
-        $tweet = $this->commentRepository->save($comment);
+        $comment = $this->commentRepository->save($comment);
 
         return new UploadCommentImageResponse($comment);
     }

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Action\Comment;
 
-
-class UpdateCommentRequest
+final class UpdateCommentRequest
 {
     private $id;
     private $body;

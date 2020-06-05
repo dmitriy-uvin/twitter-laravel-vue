@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Action\Comment;
 
-
 use Illuminate\Http\UploadedFile;
 
-class UploadCommentImageRequest
+final class UploadCommentImageRequest
 {
     private $id;
     private $image;
