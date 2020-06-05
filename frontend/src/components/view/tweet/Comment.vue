@@ -48,14 +48,28 @@
                     <br>
                     {{ comment.body }}
                     <br>
-                    <small class="has-text-grey">
-                        {{ comment.created | createdDate }}
-                    </small><br>
                 </p>
+                <figure v-if="comment.imageUrl" class="image is-3by1 tweet-image">
+                    <img
+                        :src="comment.imageUrl"
+                        alt="Tweet image"
+                        @click="showImageModal"
+                    >
+                </figure>
+                <small class="has-text-grey">
+                    {{ comment.created | createdDate }}
+                </small><br>
+
             </div>
         </div>
         <b-modal :active.sync="isEditCommentModalActive" has-modal-card>
             <EditCommentForm :comment="comment" @updated="updatePage" />
+        </b-modal>
+
+        <b-modal :active.sync="isImageModalActive">
+            <p class="image is-4by3">
+                <img class="" :src="comment.imageUrl">
+            </p>
         </b-modal>
     </article>
 </template>
@@ -74,6 +88,7 @@ export default {
     },
     data: () => ({
         isEditCommentModalActive: false,
+        isImageModalActive: false
     }),
     mixins: [showStatusToast],
     computed: {
@@ -117,6 +132,9 @@ export default {
         },
         updatePage() {
             this.$emit('updateData');
+        },
+        showImageModal() {
+            this.isImageModalActive = true;
         }
     },
 };
@@ -150,5 +168,12 @@ button {
 }
 .upd-time {
     font-size: 0.750em;
+}
+.tweet-image {
+    margin: 12px 0 0 0;
+    img {
+        width: auto;
+        cursor: pointer;
+    }
 }
 </style>
