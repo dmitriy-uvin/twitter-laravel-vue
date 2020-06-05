@@ -103,8 +103,6 @@
         <b-modal :active.sync="isEditTweetModalActive" has-modal-card>
             <EditTweetForm :tweet="tweet" />
         </b-modal>
-
-
     </div>
 </template>
 
