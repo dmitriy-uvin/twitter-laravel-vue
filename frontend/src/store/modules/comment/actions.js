@@ -103,7 +103,7 @@ export default {
 
             commit(SET_COMMENT_IMAGE, {
                 id,
-                imageUrl: comment.imageUrl
+                imageUrl: comment.image_url
             });
 
             commit(SET_LOADING, false, { root: true });
