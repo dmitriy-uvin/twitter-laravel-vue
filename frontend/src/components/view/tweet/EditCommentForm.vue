@@ -8,7 +8,7 @@
             <div class="error has-text-danger" v-if="errorMessage">{{ errorMessage }}</div>
 
             <b-field label="Comment Body">
-                <b-input type="textarea" v-model="text" :placeholder="comment.body" />
+                <b-input type="textarea" v-model="body" :placeholder="comment.body" />
             </b-field>
 
             <b-field class="file">
@@ -25,7 +25,7 @@
         </section>
 
         <footer class="modal-card-foot">
-            <b-button type="is-primary" :disabled="!text.trim()">
+            <b-button type="is-primary" :disabled="!body.trim()" @click="save">
                 Save
             </b-button>
         </footer>
@@ -33,6 +33,9 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+import showStatusToast from '../../mixin/showStatusToast';
+
 export default {
     name: 'EditCommentForm',
     props: {
@@ -41,11 +44,42 @@ export default {
             required: true
         }
     },
+    mixins: [showStatusToast],
     data: () => ({
-        text: '',
+        body: '',
         errorMessage: '',
         image: null
     }),
+    methods: {
+        ...mapActions('comment', [
+            'editComment',
+            'uploadCommentImage'
+        ]),
+        async save() {
+            try {
+                const comment = await this.editComment({ id: this.comment.id, body: this.body });
+
+                if (comment && this.image === null) {
+                    this.$parent.close();
+                    return;
+                }
+
+                // await this.uploadCommentImage({
+                //     id: this.comment.id,
+                //     imageFile: this.image
+                // });
+
+                this.$parent.close();
+                this.showSuccessMessage('Comment updated!');
+                this.$emit('updated');
+            } catch (error) {
+                this.showErrorMessage(error.message);
+            }
+        },
+        showErrorMessage(msg) {
+            this.errorMessage = msg;
+        }
+    }
 };
 </script>
 

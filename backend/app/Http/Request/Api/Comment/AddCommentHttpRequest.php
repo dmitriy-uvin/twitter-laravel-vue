@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Request\Api;
+namespace App\Http\Request\Api\Comment;
 
 use App\Http\Request\ApiFormRequest;
 

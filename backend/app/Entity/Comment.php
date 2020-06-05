@@ -14,6 +14,7 @@ use InvalidArgumentException;
  * @package App\Entity
  * @property int $id
  * @property string $body
+ * @property string $imageUrl
  * @property int $author_id
  * @property int $tweet_id
  * @property Carbon $created_at

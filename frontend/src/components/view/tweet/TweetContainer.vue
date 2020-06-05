@@ -86,6 +86,7 @@
                         :key="comment.id"
                         :comment="comment"
                         :tweet-id="tweet.id"
+                        @updateData="updateComponent"
                     />
                 </template>
 
@@ -191,6 +192,14 @@ export default {
                     id: this.tweet.id,
                     userId: this.user.id
                 });
+            } catch (error) {
+                console.error(error.message);
+            }
+        },
+        async updateComponent() {
+            try {
+                await this.fetchTweetById(this.$route.params.id);
+                this.fetchComments(this.tweet.id);
             } catch (error) {
                 console.error(error.message);
             }
