@@ -30,7 +30,7 @@
                         </p>
                         <b-dropdown-item aria-role="menuitem">
                             <b-icon pack="fa" icon="edit" />
-                            <button class="dropdown-item-text">Edit</button>
+                            <button class="dropdown-item-text" @click="onEditComment">Edit</button>
                         </b-dropdown-item>
 
                         <hr class="dropdown-divider">
@@ -49,19 +49,27 @@
                 </p>
             </div>
         </div>
+        <b-modal :active.sync="isEditCommentModalActive" has-modal-card>
+            <EditCommentForm :comment="comment"/>
+        </b-modal>
     </article>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import DefaultAvatar from '../../common/DefaultAvatar.vue';
+import EditCommentForm from './EditCommentForm.vue';
 import showStatusToast from '../../mixin/showStatusToast';
 
 export default {
     name: 'Comment',
     components: {
         DefaultAvatar,
+        EditCommentForm
     },
+    data: () => ({
+        isEditCommentModalActive: false,
+    }),
     mixins: [showStatusToast],
     computed: {
         ...mapGetters('auth', {
@@ -81,6 +89,9 @@ export default {
         ...mapActions('comment', [
             'deleteComment'
         ]),
+        onEditComment() {
+            this.isEditCommentModalActive = true;
+        },
         onDeleteComment() {
             this.$buefy.dialog.confirm({
                 title: 'Deleting comment',
