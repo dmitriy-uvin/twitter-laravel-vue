@@ -138,8 +138,8 @@ final class CommentController extends ApiController
     {
         $response = $this->uploadCommentImageAction->execute(
             new UploadCommentImageRequest(
-                (int) $id,
-                $request->get('image')
+                (int)$id,
+                $request->file('image')
             )
         );
 
