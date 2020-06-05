@@ -14,7 +14,7 @@ use InvalidArgumentException;
  * @package App\Entity
  * @property int $id
  * @property string $body
- * @property string $imageUrl
+ * @property string $image_url
  * @property int $author_id
  * @property int $tweet_id
  * @property Carbon $created_at
@@ -27,7 +27,8 @@ final class Comment extends Model
     protected $fillable = [
         'body',
         'author_id',
-        'tweet_id'
+        'tweet_id',
+        'image_url',
     ];
 
     // append author relation in entity by default
@@ -51,6 +52,11 @@ final class Comment extends Model
     public function getBody(): string
     {
         return $this->body;
+    }
+
+    public function getImageUrl(): ?string
+    {
+        return $this->image_url;
     }
 
     public function getCreatedAt(): Carbon
