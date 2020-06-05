@@ -64,10 +64,13 @@ export default {
                     return;
                 }
 
-                await this.uploadCommentImage({
-                    id: this.comment.id,
-                    imageFile: this.image
-                });
+                if (this.image !== null) {
+                    await this.uploadCommentImage({
+                        id: this.comment.id,
+                        imageFile: this.image
+                    });
+                }
+
 
                 this.$parent.close();
                 this.showSuccessMessage('Comment updated!');
