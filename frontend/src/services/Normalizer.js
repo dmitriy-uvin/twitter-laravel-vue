@@ -21,6 +21,7 @@ export const emptyUser = () => ({
 export const commentMapper = comment => ({
     id: comment.id,
     body: comment.body,
+    imageUrl: comment.image_url,
     authorId: comment.author_id,
     tweetId: comment.tweet_id,
     created: comment.created_at,
