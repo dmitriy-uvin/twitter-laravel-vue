@@ -17,5 +17,8 @@ export default {
         .getCommentsByTweetId(tweetId)
         .find(comment => comment.authorId === userId) !== undefined,
 
-    isCommentOwner: () => (authorId, userId) => authorId === userId
+    isCommentOwner: () => (authorId, userId) => authorId === userId,
+
+    commentIsLikedByUser: (state) => (commentId, userId) => state
+        .comments[commentId].likes.find(like => like.userId === userId) !== undefined
 };
