@@ -19,9 +19,7 @@
                     <strong>
                         {{ comment.author.firstName }} {{ comment.author.lastName }}
                     </strong>
-                    <small class="has-text-grey upd-time" v-if="comment.created !== comment.updated">
-                        Last update: {{ comment.updated | createdDate }}
-                    </small>
+                    <small class="has-text-grey">{{ comment.created | createdDate }}</small>
                     <b-dropdown
                         aria-role="menu"
                         position="is-bottom-left"
@@ -56,9 +54,23 @@
                         @click="showImageModal"
                     >
                 </figure>
-                <small class="has-text-grey">
-                    {{ comment.created | createdDate }}
-                </small><br>
+                <div class="bottom-nav">
+
+                    <small class="has-text-grey upd-time" v-if="comment.created !== comment.updated">
+                        Last update: {{ comment.updated | createdDate }}
+                    </small>
+                </div>
+                <b-tooltip label="Like" animated>
+                    <a class="level-item" @click="onClickLikeComment">
+                        <span
+                            class="icon is-medium has-text-info"
+                            :class="{ 'has-text-danger': commentIsLikedByUser(comment.id, user.id) }"
+                        >
+                            <font-awesome-icon icon="heart" />
+                        </span>
+                        {{ comment.likesCount }}
+                    </a>
+                </b-tooltip>
 
             </div>
         </div>
@@ -96,7 +108,8 @@ export default {
             user: 'getAuthenticatedUser'
         }),
         ...mapGetters('comment', [
-            'isCommentOwner'
+            'isCommentOwner',
+            'commentIsLikedByUser'
         ])
     },
     props: {
@@ -107,7 +120,8 @@ export default {
     },
     methods: {
         ...mapActions('comment', [
-            'deleteComment'
+            'deleteComment',
+            'likeOrDislikeComment'
         ]),
         onEditComment() {
             this.isEditCommentModalActive = true;
@@ -135,6 +149,16 @@ export default {
         },
         showImageModal() {
             this.isImageModalActive = true;
+        },
+        async onClickLikeComment() {
+            try {
+                await this.likeOrDislikeComment({
+                    id: this.comment.id,
+                    userId: this.user.id
+                });
+            } catch (error) {
+                console.error(error.message);
+            }
         }
     },
 };
@@ -176,4 +200,5 @@ button {
         cursor: pointer;
     }
 }
+
 </style>
