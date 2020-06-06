@@ -8,7 +8,7 @@
             <div class="error has-text-danger" v-if="errorMessage">{{ errorMessage }}</div>
 
             <b-field label="Comment Body">
-                <b-input type="textarea" v-model="body" :placeholder="comment.body" />
+                <b-input type="textarea" v-model="body" />
             </b-field>
 
             <b-field class="file">
@@ -25,7 +25,7 @@
         </section>
 
         <footer class="modal-card-foot">
-            <b-button type="is-primary" :disabled="!body.trim()" @click="save">
+            <b-button type="is-primary" @click="save" :disabled="!body.trim()">
                 Save
             </b-button>
         </footer>
@@ -46,7 +46,7 @@ export default {
     },
     mixins: [showStatusToast],
     data: () => ({
-        body: '',
+        body: '111',
         errorMessage: '',
         image: null
     }),
@@ -82,6 +82,9 @@ export default {
         showErrorMessage(msg) {
             this.errorMessage = msg;
         }
+    },
+    mounted() {
+        this.body = this.comment.body;
     }
 };
 </script>
