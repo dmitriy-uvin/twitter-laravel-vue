@@ -57,6 +57,7 @@ Route::prefix('v1')->group(function () {
             Route::delete('/{id}', 'CommentController@deleteCommentById');
             Route::put('/{id}', 'CommentController@updateCommentById');
             Route::post('/{id}/image', 'CommentController@uploadCommentImage');
+            Route::put('/{id}/like', 'LikeController@likeOrDislikeComment');
         });
     });
 });
