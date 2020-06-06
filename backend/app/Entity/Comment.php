@@ -7,6 +7,7 @@ namespace App\Entity;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use InvalidArgumentException;
 
 /**
@@ -17,6 +18,7 @@ use InvalidArgumentException;
  * @property string $image_url
  * @property int $author_id
  * @property int $tweet_id
+ * @property int $likes_count
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
@@ -32,7 +34,9 @@ final class Comment extends Model
     ];
 
     // append author relation in entity by default
-    protected $with = ['author'];
+    protected $with = ['author', 'likes'];
+
+    protected $withCount = ['likes'];
 
     public function author(): BelongsTo
     {
@@ -42,6 +46,11 @@ final class Comment extends Model
     public function tweet(): BelongsTo
     {
         return $this->belongsTo(Tweet::class);
+    }
+
+    public function likes(): MorphMany
+    {
+        return $this->morphMany(Like::class, 'likeable');
     }
 
     public function getId(): int
@@ -86,5 +95,10 @@ final class Comment extends Model
     public function getTweetId(): int
     {
         return $this->tweet_id;
+    }
+
+    public function getLikesCount(): int
+    {
+        return (int)$this->likes_count;
     }
 }
