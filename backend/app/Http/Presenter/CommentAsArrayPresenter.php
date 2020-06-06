@@ -10,10 +10,12 @@ use Illuminate\Support\Collection;
 final class CommentAsArrayPresenter implements CollectionAsArrayPresenter
 {
     private $userArrayPresenter;
+    private $likeArrayPresenter;
 
-    public function __construct(UserArrayPresenter $userArrayPresenter)
+    public function __construct(UserArrayPresenter $userArrayPresenter, LikeArrayPresenter $likeArrayPresenter)
     {
         $this->userArrayPresenter = $userArrayPresenter;
+        $this->likeArrayPresenter = $likeArrayPresenter;
     }
 
     public function present(Comment $comment): array
@@ -26,7 +28,9 @@ final class CommentAsArrayPresenter implements CollectionAsArrayPresenter
             'tweet_id' => $comment->getTweetId(),
             'created_at' => $comment->getCreatedAt()->toDateTimeString(),
             'updated_at' => $comment->getUpdatedAt() ? $comment->getUpdatedAt()->toDateTimeString() : null,
-            'author' => $this->userArrayPresenter->present($comment->author)
+            'author' => $this->userArrayPresenter->present($comment->author),
+            'likes_count' => $comment->getLikesCount(),
+            'likes' => $this->likeArrayPresenter->presentCollection($comment->likes),
         ];
     }
 
