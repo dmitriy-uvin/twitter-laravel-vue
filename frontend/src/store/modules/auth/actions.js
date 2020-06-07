@@ -1,5 +1,9 @@
 import api from '@/api/Api';
-import { USER_LOGIN, SET_AUTHENTICATED_USER, USER_LOGOUT } from './mutationTypes';
+import {
+    USER_LOGIN,
+    SET_AUTHENTICATED_USER,
+    USER_LOGOUT
+} from './mutationTypes';
 import { SET_LOADING } from '../../mutationTypes';
 
 export default {
