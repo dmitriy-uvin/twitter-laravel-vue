@@ -19,6 +19,7 @@
                     <strong>
                         {{ comment.author.firstName }} {{ comment.author.lastName }}
                     </strong>
+                    <small class="has-text-grey">{{ comment.created | createdDate }}</small>
                     <b-dropdown
                         aria-role="menu"
                         position="is-bottom-left"
@@ -29,28 +30,58 @@
                             <b-icon pack="fa" icon="ellipsis-h" />
                         </p>
                         <b-dropdown-item aria-role="menuitem">
-                            <b-icon pack="fa" icon="edit" />
-                            <button class="dropdown-item-text" @click="onEditComment">Edit</button>
+                            <button class="dropdown-item-text" @click="onEditComment">
+                                <b-icon pack="fa" icon="edit" /> Edit
+                            </button>
                         </b-dropdown-item>
 
                         <hr class="dropdown-divider">
 
                         <b-dropdown-item aria-role="menuitem">
-                            <b-icon pack="fa" icon="trash" />
-                            <button class="dropdown-item-text" @click="onDeleteComment">Delete</button>
+                            <button class="dropdown-item-text" @click="onDeleteComment">
+                                <b-icon pack="fa" icon="trash" /> Delete
+                            </button>
                         </b-dropdown-item>
                     </b-dropdown>
                     <br>
                     {{ comment.body }}
                     <br>
-                    <small class="has-text-grey">
-                        {{ comment.created | createdDate }}
-                    </small>
                 </p>
+                <figure v-if="comment.imageUrl" class="image is-3by1 tweet-image">
+                    <img
+                        :src="comment.imageUrl"
+                        alt="Tweet image"
+                        @click="showImageModal"
+                    >
+                </figure>
+                <div class="bottom-nav">
+
+                    <small class="has-text-grey upd-time" v-if="comment.created !== comment.updated">
+                        Last update: {{ comment.updated | createdDate }}
+                    </small>
+                </div>
+                <b-tooltip label="Like" animated>
+                    <a class="level-item" @click="onClickLikeComment">
+                        <span
+                            class="icon is-medium has-text-info"
+                            :class="{ 'has-text-danger': commentIsLikedByUser(comment.id, user.id) }"
+                        >
+                            <font-awesome-icon icon="heart" />
+                        </span>
+                        {{ comment.likesCount }}
+                    </a>
+                </b-tooltip>
+
             </div>
         </div>
         <b-modal :active.sync="isEditCommentModalActive" has-modal-card>
-            <EditCommentForm :comment="comment"/>
+            <EditCommentForm :comment="comment" @updated="updatePage" />
+        </b-modal>
+
+        <b-modal :active.sync="isImageModalActive">
+            <p class="image is-4by3">
+                <img class="" :src="comment.imageUrl">
+            </p>
         </b-modal>
     </article>
 </template>
@@ -69,6 +100,7 @@ export default {
     },
     data: () => ({
         isEditCommentModalActive: false,
+        isImageModalActive: false
     }),
     mixins: [showStatusToast],
     computed: {
@@ -76,7 +108,8 @@ export default {
             user: 'getAuthenticatedUser'
         }),
         ...mapGetters('comment', [
-            'isCommentOwner'
+            'isCommentOwner',
+            'commentIsLikedByUser'
         ])
     },
     props: {
@@ -87,7 +120,8 @@ export default {
     },
     methods: {
         ...mapActions('comment', [
-            'deleteComment'
+            'deleteComment',
+            'likeOrDislikeComment'
         ]),
         onEditComment() {
             this.isEditCommentModalActive = true;
@@ -109,6 +143,22 @@ export default {
                     }
                 }
             });
+        },
+        updatePage() {
+            this.$emit('updateData');
+        },
+        showImageModal() {
+            this.isImageModalActive = true;
+        },
+        async onClickLikeComment() {
+            try {
+                await this.likeOrDislikeComment({
+                    id: this.comment.id,
+                    userId: this.user.id
+                });
+            } catch (error) {
+                console.error(error.message);
+            }
         }
     },
 };
@@ -140,4 +190,15 @@ button {
         margin-bottom: 0;
     }
 }
+.upd-time {
+    font-size: 0.750em;
+}
+.tweet-image {
+    margin: 12px 0 0 0;
+    img {
+        width: auto;
+        cursor: pointer;
+    }
+}
+
 </style>

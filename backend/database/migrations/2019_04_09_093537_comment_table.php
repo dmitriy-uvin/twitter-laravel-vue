@@ -16,6 +16,7 @@ class CommentTable extends Migration
         Schema::create('comments', function (Blueprint $blueprint) {
             $blueprint->bigIncrements('id');
             $blueprint->longText('body');
+            $blueprint->string('image_url')->nullable();
             $blueprint->unsignedBigInteger('author_id');
             $blueprint->unsignedBigInteger('tweet_id');
             $blueprint->timestamps();

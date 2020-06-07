@@ -1,7 +1,7 @@
 <template>
     <div class="modal-card" @keyup.ctrl.exact.enter="save">
         <header class="modal-card-head">
-            <p class="modal-card-title">Edit</p>
+            <p class="modal-card-title">Edit Tweet</p>
         </header>
 
         <section class="modal-card-body">

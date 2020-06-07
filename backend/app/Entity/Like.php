@@ -78,6 +78,17 @@ final class Like extends Model
         $this->created_at = Carbon::now();
     }
 
+    public function forComment(int $userId, int $commentId): void
+    {
+        $this->assertIdIsValid($userId);
+        $this->assertIdIsValid($commentId);
+
+        $this->user_id = $userId;
+        $this->likeable_id = $commentId;
+        $this->likeable_type = Comment::class;
+        $this->created_at = Carbon::now();
+    }
+
     /**
      * @param int $id
      * @throws InvalidArgumentException
