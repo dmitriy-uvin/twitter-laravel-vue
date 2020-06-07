@@ -1,3 +1,4 @@
 export default {
-    tweets: {}
+    tweets: {},
+    likedUsers: []
 };

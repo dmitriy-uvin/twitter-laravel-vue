@@ -56,16 +56,24 @@
                                     </b-tooltip>
 
                                     <b-tooltip label="Like" animated>
-                                        <a class="level-item" @click="onLikeOrDislikeTweet">
+                                        <a
+                                            class="level-item"
+                                            style="vertical-align: middle"
+                                        >
                                             <span
                                                 class="icon is-medium has-text-info"
+                                                @click="onLikeOrDislikeTweet"
                                                 :class="{
                                                     'has-text-danger': tweetIsLikedByUser(tweet.id, user.id)
                                                 }"
                                             >
                                                 <font-awesome-icon icon="heart" />
                                             </span>
-                                            {{ tweet.likesCount }}
+                                            <span
+                                                @click="openModalLikedUsers"
+                                            >
+                                                {{ tweet.likesCount }}
+                                            </span>
                                         </a>
                                     </b-tooltip>
                                 </div>
@@ -103,6 +111,10 @@
         <b-modal :active.sync="isEditTweetModalActive" has-modal-card>
             <EditTweetForm :tweet="tweet" />
         </b-modal>
+
+        <b-modal :active.sync="isLikedUsersModal" has-modal-card>
+            <LikedUsersModal :liked-users="likedUsers"/>
+        </b-modal>
     </div>
 </template>
 
@@ -111,6 +123,7 @@ import { mapGetters, mapActions } from 'vuex';
 import Comment from './Comment.vue';
 import NewCommentForm from './NewCommentForm.vue';
 import EditTweetForm from './EditTweetForm.vue';
+import LikedUsersModal from './LikedUsersModal.vue';
 import DefaultAvatar from '../../common/DefaultAvatar.vue';
 import showStatusToast from '../../mixin/showStatusToast';
 
@@ -120,17 +133,24 @@ export default {
         Comment,
         NewCommentForm,
         EditTweetForm,
-        DefaultAvatar
+        DefaultAvatar,
+        LikedUsersModal
     },
     mixins: [showStatusToast],
     data: () => ({
         isEditTweetModalActive: false,
-        isImageModalActive: false
+        isImageModalActive: false,
+        isLikedUsersModal: false,
+        likedUsers: []
     }),
     async created() {
         try {
             await this.fetchTweetById(this.$route.params.id);
             this.fetchComments(this.tweet.id);
+
+            await this.getUsersByIds(
+                this.tweet.likes.map(item => item.userId)
+            );
         } catch (error) {
             console.error(error.message);
         }
@@ -151,12 +171,14 @@ export default {
         tweet() {
             return this.getTweetById(this.$route.params.id);
         },
+
     },
     methods: {
         ...mapActions('tweet', [
             'fetchTweetById',
             'deleteTweet',
-            'likeOrDislikeTweet'
+            'likeOrDislikeTweet',
+            'getUsersByIds'
         ]),
         ...mapActions('comment', [
             'fetchComments',
@@ -190,6 +212,10 @@ export default {
                     id: this.tweet.id,
                     userId: this.user.id
                 });
+
+                await this.getUsersByIds(
+                    this.tweet.likes.map(item => item.userId)
+                );
             } catch (error) {
                 console.error(error.message);
             }
@@ -201,6 +227,10 @@ export default {
             } catch (error) {
                 console.error(error.message);
             }
+        },
+
+        async openModalLikedUsers() {
+            this.isLikedUsersModal = true;
         }
     },
 };

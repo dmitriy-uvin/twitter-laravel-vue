@@ -6,7 +6,8 @@ import {
     SET_TWEET,
     DELETE_TWEET,
     LIKE_TWEET,
-    DISLIKE_TWEET
+    DISLIKE_TWEET,
+    SET_TWEET_LIKED_USERS
 } from './mutationTypes';
 import { SET_LOADING } from '../../mutationTypes';
 
@@ -166,4 +167,25 @@ export default {
             return Promise.reject(error);
         }
     },
+
+    async getUsersByIds({ commit }, ids) {
+        commit(SET_LOADING, true, { root: true });
+
+        try {
+            const usersLiked = await ids.map(async id => {
+                const response = await api.get(`/users/${id}`);
+                return response;
+            });
+            const receivedUsersLiked = await Promise.all(usersLiked);
+
+            commit(SET_TWEET_LIKED_USERS, receivedUsersLiked);
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.resolve();
+        } catch (error) {
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.reject(error);
+        }
+    }
 };

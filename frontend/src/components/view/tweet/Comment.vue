@@ -56,7 +56,10 @@
                 </figure>
                 <div class="bottom-nav">
 
-                    <small class="has-text-grey upd-time" v-if="comment.created !== comment.updated">
+                    <small
+                        class="has-text-grey upd-time"
+                        v-if="comment.created !== comment.updated && comment.updated !== null"
+                    >
                         Last update: {{ comment.updated | createdDate }}
                     </small>
                 </div>
