@@ -1,4 +1,4 @@
-import { tweetMapper, userMapper } from '@/services/Normalizer';
+import { tweetMapper } from '@/services/Normalizer';
 import {
     SET_TWEETS,
     SET_TWEET_IMAGE,
@@ -7,8 +7,7 @@ import {
     INCREMENT_COMMENTS_COUNT,
     LIKE_TWEET,
     DISLIKE_TWEET,
-    DECREMENT_COMMENTS_COUNT,
-    SET_TWEET_LIKED_USERS
+    DECREMENT_COMMENTS_COUNT
 } from './mutationTypes';
 
 export default {
@@ -56,8 +55,4 @@ export default {
 
         state.tweets[id].likes = state.tweets[id].likes.filter(like => like.userId !== userId);
     },
-
-    [SET_TWEET_LIKED_USERS]: (state, users) => {
-        state.likedUsers = users.map(user => userMapper(user));
-    }
 };
