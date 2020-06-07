@@ -58,7 +58,7 @@
 
                     <small
                         class="has-text-grey upd-time"
-                        v-if="comment.created !== comment.updated && comment.updated !== null"
+                        v-if="commentIsUpdated(comment)"
                     >
                         Last update: {{ comment.updated | createdDate }}
                     </small>
@@ -112,7 +112,8 @@ export default {
         }),
         ...mapGetters('comment', [
             'isCommentOwner',
-            'commentIsLikedByUser'
+            'commentIsLikedByUser',
+            'commentIsUpdated'
         ])
     },
     props: {
