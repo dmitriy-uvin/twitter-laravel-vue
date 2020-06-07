@@ -77,8 +77,6 @@
                         </span>
                     </a>
                 </b-tooltip>
-
-                <button @click="test">Click</button>
             </div>
         </div>
         <b-modal :active.sync="isEditCommentModalActive" has-modal-card>
@@ -176,12 +174,6 @@ export default {
             } catch (error) {
                 console.error(error.message);
             }
-        },
-        async test() {
-            this.commentLikedUsers = await this.getUsersByIds(
-                this.comment.likes.map(like => like.userId)
-            );
-            console.log(this.commentLikedUsers);
         },
         async openCommentLikedUsersModal() {
             await this.getUsersByIds(
