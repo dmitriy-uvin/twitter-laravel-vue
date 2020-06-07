@@ -64,17 +64,21 @@
                     </small>
                 </div>
                 <b-tooltip label="Like" animated>
-                    <a class="level-item" @click="onClickLikeComment">
+                    <a class="level-item">
                         <span
                             class="icon is-medium has-text-info"
+                            @click="onClickLikeComment"
                             :class="{ 'has-text-danger': commentIsLikedByUser(comment.id, user.id) }"
                         >
                             <font-awesome-icon icon="heart" />
                         </span>
-                        {{ comment.likesCount }}
+                        <span @click="openCommentLikedUsersModal">
+                            {{ comment.likesCount }}
+                        </span>
                     </a>
                 </b-tooltip>
 
+                <button @click="test">Click</button>
             </div>
         </div>
         <b-modal :active.sync="isEditCommentModalActive" has-modal-card>
@@ -86,6 +90,10 @@
                 <img class="" :src="comment.imageUrl">
             </p>
         </b-modal>
+
+        <b-modal :active.sync="isCommentLikedUsersModal" has-modal-card>
+            <CommentLikedUsersModal />
+        </b-modal>
     </article>
 </template>
 
@@ -94,16 +102,20 @@ import { mapGetters, mapActions } from 'vuex';
 import DefaultAvatar from '../../common/DefaultAvatar.vue';
 import EditCommentForm from './EditCommentForm.vue';
 import showStatusToast from '../../mixin/showStatusToast';
+import CommentLikedUsersModal from './CommentLikedUsersModal.vue';
 
 export default {
     name: 'Comment',
     components: {
         DefaultAvatar,
-        EditCommentForm
+        EditCommentForm,
+        CommentLikedUsersModal
     },
     data: () => ({
         isEditCommentModalActive: false,
-        isImageModalActive: false
+        isImageModalActive: false,
+        isCommentLikedUsersModal: false,
+        commentLikedUsers: []
     }),
     mixins: [showStatusToast],
     computed: {
@@ -127,6 +139,7 @@ export default {
             'deleteComment',
             'likeOrDislikeComment'
         ]),
+        ...mapActions(['getUsersByIds']),
         onEditComment() {
             this.isEditCommentModalActive = true;
         },
@@ -163,6 +176,18 @@ export default {
             } catch (error) {
                 console.error(error.message);
             }
+        },
+        async test() {
+            this.commentLikedUsers = await this.getUsersByIds(
+                this.comment.likes.map(like => like.userId)
+            );
+            console.log(this.commentLikedUsers);
+        },
+        async openCommentLikedUsersModal() {
+            await this.getUsersByIds(
+                this.comment.likes.map(like => like.userId)
+            );
+            this.isCommentLikedUsersModal = true;
         }
     },
 };
