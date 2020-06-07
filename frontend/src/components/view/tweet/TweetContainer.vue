@@ -112,8 +112,8 @@
             <EditTweetForm :tweet="tweet" />
         </b-modal>
 
-        <b-modal :active.sync="isLikedUsersModal" has-modal-card>
-            <LikedUsersModal :liked-users="likedUsers"/>
+        <b-modal :active.sync="isTweetLikedUsersModal" has-modal-card>
+            <TweetLikedUsersModal :liked-users="likedUsers"/>
         </b-modal>
     </div>
 </template>
@@ -123,7 +123,7 @@ import { mapGetters, mapActions } from 'vuex';
 import Comment from './Comment.vue';
 import NewCommentForm from './NewCommentForm.vue';
 import EditTweetForm from './EditTweetForm.vue';
-import LikedUsersModal from './LikedUsersModal.vue';
+import TweetLikedUsersModal from './TweetLikedUsersModal.vue';
 import DefaultAvatar from '../../common/DefaultAvatar.vue';
 import showStatusToast from '../../mixin/showStatusToast';
 
@@ -134,23 +134,19 @@ export default {
         NewCommentForm,
         EditTweetForm,
         DefaultAvatar,
-        LikedUsersModal
+        TweetLikedUsersModal
     },
     mixins: [showStatusToast],
     data: () => ({
         isEditTweetModalActive: false,
         isImageModalActive: false,
-        isLikedUsersModal: false,
+        isTweetLikedUsersModal: false,
         likedUsers: []
     }),
     async created() {
         try {
             await this.fetchTweetById(this.$route.params.id);
             this.fetchComments(this.tweet.id);
-
-            await this.getUsersByIds(
-                this.tweet.likes.map(item => item.userId)
-            );
         } catch (error) {
             console.error(error.message);
         }
@@ -177,9 +173,9 @@ export default {
         ...mapActions('tweet', [
             'fetchTweetById',
             'deleteTweet',
-            'likeOrDislikeTweet',
-            'getUsersByIds'
+            'likeOrDislikeTweet'
         ]),
+        ...mapActions(['getUsersByIds']),
         ...mapActions('comment', [
             'fetchComments',
         ]),
@@ -212,10 +208,6 @@ export default {
                     id: this.tweet.id,
                     userId: this.user.id
                 });
-
-                await this.getUsersByIds(
-                    this.tweet.likes.map(item => item.userId)
-                );
             } catch (error) {
                 console.error(error.message);
             }
@@ -230,7 +222,11 @@ export default {
         },
 
         async openModalLikedUsers() {
-            this.isLikedUsersModal = true;
+            await this.getUsersByIds(
+                this.tweet.likes.map(item => item.userId)
+            );
+
+            this.isTweetLikedUsersModal = true;
         }
     },
 };

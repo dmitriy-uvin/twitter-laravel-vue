@@ -53,20 +53,12 @@ import { mapGetters } from 'vuex';
 import DefaultAvatar from '../../common/DefaultAvatar.vue';
 
 export default {
-    name: 'LikedUsersModal',
+    name: 'CommentLikedUsersModal',
     components: {
         DefaultAvatar
     },
-    props: {
-        likedUsers: {
-            type: Array,
-            required: true
-        }
-    },
     computed: {
-        ...mapGetters('tweet', [
-            'getTweetLikedUsers'
-        ])
+        ...mapGetters(['getTweetLikedUsers'])
     }
 };
 </script>

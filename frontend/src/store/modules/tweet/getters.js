@@ -15,6 +15,4 @@ export default {
         .getTweetById(tweetId)
         .likes
         .find(like => like.userId === userId) !== undefined,
-
-    getTweetLikedUsers: state => state.likedUsers
 };
