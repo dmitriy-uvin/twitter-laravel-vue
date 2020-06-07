@@ -6,3 +6,4 @@ export const INCREMENT_COMMENTS_COUNT = 'incrementCommentsCount';
 export const DECREMENT_COMMENTS_COUNT = 'decrementCommentsCount';
 export const LIKE_TWEET = 'likeTweet';
 export const DISLIKE_TWEET = 'dislikeTweet';
+export const SET_TWEET_LIKED_USERS = 'setTweetLikedUsers';
