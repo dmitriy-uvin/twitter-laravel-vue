@@ -20,5 +20,8 @@ export default {
     isCommentOwner: () => (authorId, userId) => authorId === userId,
 
     commentIsLikedByUser: (state) => (commentId, userId) => state
-        .comments[commentId].likes.find(like => like.userId === userId) !== undefined
+        .comments[commentId].likes.find(like => like.userId === userId) !== undefined,
+
+    commentIsUpdated: () => (comment) => (comment.created !== comment.updated) && comment.updated !== null,
+
 };
