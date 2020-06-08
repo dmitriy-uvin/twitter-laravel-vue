@@ -139,21 +139,29 @@ export default {
         }
     },
 
-    async likeOrDislikeTweet({ commit }, { id, userId }) {
+    async likeOrDislikeTweet({ commit }, { user, tweet }) {
         commit(SET_LOADING, true, { root: true });
 
         try {
-            const data = await api.put(`/tweets/${id}/like`);
+            const data = await api.put(`/tweets/${tweet.id}/like`);
 
             if (data.status === 'added') {
                 commit(LIKE_TWEET, {
-                    id,
-                    userId
+                    id: tweet.id,
+                    userId: user.id
                 });
+                if (tweet.author.notifications) {
+                    const formData = new FormData();
+                    formData.append('receiver', tweet.author.id);
+                    formData.append('liker', user.id);
+                    formData.append('tweet', tweet.id);
+
+                    api.post(`/users/${tweet.author.id}/notification`, formData);
+                }
             } else {
                 commit(DISLIKE_TWEET, {
-                    id,
-                    userId
+                    id: tweet.id,
+                    userId: user.id
                 });
             }
 
