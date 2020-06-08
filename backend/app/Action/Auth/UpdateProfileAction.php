@@ -24,6 +24,8 @@ final class UpdateProfileAction
         $user->first_name = $request->getFirstName() ?: $user->first_name;
         $user->last_name = $request->getLastName() ?: $user->last_name;
         $user->nickname = $request->getNickname() ?: $user->nickname;
+        $user->notifications = $request->getNotifications();
+
 
         $user = $this->userRepository->save($user);
 

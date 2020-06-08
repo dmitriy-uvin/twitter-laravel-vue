@@ -10,17 +10,20 @@ final class UpdateProfileRequest
     private $firstName;
     private $lastName;
     private $nickname;
+    private $notifications;
 
     public function __construct(
         ?string $email,
         ?string $firstName,
         ?string $lastName,
-        ?string $nickname
+        ?string $nickname,
+        ?bool $notifications
     ) {
         $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->nickname = $nickname;
+        $this->notifications = $notifications;
     }
 
     public function getEmail(): ?string
@@ -41,5 +44,10 @@ final class UpdateProfileRequest
     public function getNickname(): ?string
     {
         return $this->nickname;
+    }
+
+    public function getNotifications(): ?bool
+    {
+        return $this->notifications;
     }
 }
