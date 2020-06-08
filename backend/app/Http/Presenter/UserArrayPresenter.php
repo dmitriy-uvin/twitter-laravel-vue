@@ -17,6 +17,7 @@ final class UserArrayPresenter implements CollectionAsArrayPresenter
             'first_name' => $user->getFirstName(),
             'last_name' => $user->getLastName(),
             'nickname' => $user->getNickName(),
+            'notifications' => (bool)$user->getNotifications(),
             'avatar' => $user->getAvatar()
         ];
     }
