@@ -5,6 +5,7 @@ export const userMapper = user => ({
     avatar: user.avatar,
     email: user.email,
     nickname: user.nickname,
+    notifications: user.notifications,
     firstName: user.first_name,
     lastName: user.last_name,
 });
