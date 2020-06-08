@@ -205,8 +205,8 @@ export default {
         async onLikeOrDislikeTweet() {
             try {
                 await this.likeOrDislikeTweet({
-                    id: this.tweet.id,
-                    userId: this.user.id
+                    user: this.user,
+                    tweet: this.tweet
                 });
             } catch (error) {
                 console.error(error.message);
