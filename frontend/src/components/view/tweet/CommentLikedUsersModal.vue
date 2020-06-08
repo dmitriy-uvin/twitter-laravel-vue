@@ -5,7 +5,6 @@
         </header>
 
         <section class="modal-card-body">
-
             <article class="media" v-for="likedUser in getTweetLikedUsers" :key="likedUser.id">
                 <router-link
                     v-if="likedUser.avatar"

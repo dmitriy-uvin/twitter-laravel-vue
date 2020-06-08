@@ -46,7 +46,7 @@ export default {
     },
     mixins: [showStatusToast],
     data: () => ({
-        body: '111',
+        body: '',
         errorMessage: '',
         image: null
     }),

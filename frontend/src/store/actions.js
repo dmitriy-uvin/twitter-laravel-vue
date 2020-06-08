@@ -18,7 +18,7 @@ export default {
             commit(SET_TWEET_LIKED_USERS, receivedUsersLiked);
             commit(SET_LOADING, false, { root: true });
 
-            return Promise.resolve();
+            return true;
         } catch (error) {
             commit(SET_LOADING, false, { root: true });
 
