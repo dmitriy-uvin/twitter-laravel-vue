@@ -8,7 +8,7 @@
             <div class="error has-text-danger" v-if="errorMessage">{{ errorMessage }}</div>
 
             <b-field label="Text">
-                <b-input type="textarea" v-model="text" :placeholder="tweet.text" />
+                <b-input type="textarea" v-model="text"/>
             </b-field>
 
             <b-field class="file">
@@ -80,6 +80,9 @@ export default {
         showErrorMessage(msg) {
             this.errorMessage = msg;
         }
+    },
+    mounted() {
+        this.text = this.tweet.text;
     }
 };
 </script>
