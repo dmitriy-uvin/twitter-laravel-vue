@@ -38,7 +38,7 @@
                             v-model="editUser.notifications"
                             :value="user.notifications"
                         >
-                            Получать уведомления о лайках твитов и комментариев
+                            Receive notifications about liked tweets and comments
                         </b-checkbox>
                     </b-field>
 
