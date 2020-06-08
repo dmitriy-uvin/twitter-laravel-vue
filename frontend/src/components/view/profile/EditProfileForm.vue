@@ -33,6 +33,16 @@
                     <b-field label="Email">
                         <b-input v-model="editUser.email" type="email" />
                     </b-field>
+                    <b-field label="Notifications">
+                        <b-checkbox
+                            v-model="editUser.notifications"
+                            :value="user.notifications"
+                        >
+                            Получать уведомления о лайках твитов и комментариев
+                        </b-checkbox>
+                    </b-field>
+
+
                     <b-button type="is-primary" @click="onSaveClick">Save</b-button>
                 </div>
             </div>
