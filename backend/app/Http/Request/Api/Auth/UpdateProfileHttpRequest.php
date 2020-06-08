@@ -28,7 +28,7 @@ final class UpdateProfileHttpRequest extends ApiFormRequest
                 'string',
                 'min:2',
                 Rule::unique('users')->ignore(Auth::id())
-            ]
+            ],
         ];
     }
 }
