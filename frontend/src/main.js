@@ -12,7 +12,8 @@ import {
     faEllipsisH,
     faEdit,
     faTrash,
-    faExclamationCircle
+    faExclamationCircle,
+    faCopy
 } from '@fortawesome/free-solid-svg-icons';
 import {
     faTwitter,
@@ -38,13 +39,15 @@ library.add(
     faEllipsisH,
     faEdit,
     faTrash,
-    faExclamationCircle
+    faExclamationCircle,
+    faCopy
 );
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.config.productionTip = false;
 Vue.use(Buefy, {
-    defaultIconComponent: 'font-awesome-icon'
+    defaultIconComponent: 'font-awesome-icon',
+    defaultIconPack: 'fa'
 });
 
 createFilters(Vue);
