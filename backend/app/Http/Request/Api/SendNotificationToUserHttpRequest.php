@@ -13,7 +13,8 @@ final class SendNotificationToUserHttpRequest extends ApiFormRequest
         return [
             'receiver' => '',
             'liker' => '',
-            'tweet' => ''
+            'liked_entity_id' => '',
+            'type' => ''
         ];
     }
 }

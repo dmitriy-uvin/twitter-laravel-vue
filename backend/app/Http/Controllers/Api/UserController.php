@@ -61,7 +61,8 @@ final class UserController extends ApiController
             new SendNotificationToUserRequest(
                 (int)$request->receiver,
                 (int)$request->liker,
-                (int)$request->tweet
+                (int)$request->liked_entity_id,
+                $request->type
             )
         );
 

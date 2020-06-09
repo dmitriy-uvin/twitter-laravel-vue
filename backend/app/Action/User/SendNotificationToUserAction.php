@@ -7,7 +7,9 @@ namespace App\Action\User;
 use App\Action\SendNotificationToUserRequest;
 use App\Action\User\SendNotificationToUserResponse;
 use App\Entity\User;
+use App\Mail\LikedCommentEmail;
 use App\Mail\LikedTweetEmail;
+use App\Repository\CommentRepository;
 use App\Repository\TweetRepository;
 use App\Repository\UserRepository;
 use Illuminate\Mail\Mailer;
@@ -16,12 +18,18 @@ final class SendNotificationToUserAction
 {
     private $userRepository;
     private $tweetRepository;
+    private $commentRepository;
     private $mailer;
 
-    public function __construct(UserRepository $userRepository, TweetRepository $tweetRepository, Mailer $mailer)
-    {
+    public function __construct(
+        UserRepository $userRepository,
+        TweetRepository $tweetRepository,
+        CommentRepository $commentRepository,
+        Mailer $mailer
+    ) {
         $this->userRepository = $userRepository;
         $this->tweetRepository = $tweetRepository;
+        $this->commentRepository = $commentRepository;
         $this->mailer = $mailer;
     }
 
@@ -29,15 +37,28 @@ final class SendNotificationToUserAction
     {
         $receiver = $this->userRepository->getById($request->getReceiverId());
         $liker = $this->userRepository->getById($request->getLikerId());
-        $tweet = $this->tweetRepository->getById($request->getTweetId());
+        $type = $request->getType();
 
-        $this->mailer->to($receiver)->send(
-            new LikedTweetEmail(
-                $receiver,
-                $liker,
-                $tweet
-            )
-        );
+        if($type === 'tweet') {
+            $tweet = $this->tweetRepository->getById($request->getLikedEntityId());
+            $this->mailer->to($receiver)->send(
+                new LikedTweetEmail(
+                    $receiver,
+                    $liker,
+                    $tweet
+                )
+            );
+        } elseif ($type === 'comment') {
+            $comment = $this->commentRepository->getById($request->getLikedEntityId());
+            $this->mailer->to($receiver)->send(
+                new LikedCommentEmail(
+                    $receiver,
+                    $liker,
+                    $comment
+                )
+            );
+        }
+
 
         return new SendNotificationToUserResponse($receiver);
     }

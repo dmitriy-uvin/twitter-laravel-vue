@@ -8,13 +8,19 @@ final class SendNotificationToUserRequest
 {
     private $receiverId;
     private $likerId;
-    private $tweetId;
+    private $likedEntityId;
+    private $type;
 
-    public function __construct(int $receiverId, int $likerId, int $tweetId)
-    {
+    public function __construct(
+        int $receiverId,
+        int $likerId,
+        int $likedEntityId,
+        string $type
+    ) {
         $this->receiverId = $receiverId;
         $this->likerId = $likerId;
-        $this->tweetId = $tweetId;
+        $this->likedEntityId = $likedEntityId;
+        $this->type = $type;
     }
 
     public function getReceiverId(): int
@@ -27,9 +33,14 @@ final class SendNotificationToUserRequest
         return $this->likerId;
     }
 
-    public function getTweetId(): int
+    public function getLikedEntityId(): int
     {
-        return $this->tweetId;
+        return $this->likedEntityId;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 
 }
