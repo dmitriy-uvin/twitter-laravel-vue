@@ -1,7 +1,7 @@
 import api from '@/api/Api';
 import {
     SET_LOADING,
-    SET_TWEET_LIKED_USERS
+    SET_LIKED_USERS
 } from './mutationTypes';
 
 export default {
@@ -15,7 +15,7 @@ export default {
             });
             const receivedUsersLiked = await Promise.all(usersLiked);
 
-            commit(SET_TWEET_LIKED_USERS, receivedUsersLiked);
+            commit(SET_LIKED_USERS, receivedUsersLiked);
             commit(SET_LOADING, false, { root: true });
 
             return true;
