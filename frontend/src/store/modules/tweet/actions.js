@@ -139,29 +139,21 @@ export default {
         }
     },
 
-    async likeOrDislikeTweet({ commit }, { user, tweet }) {
+    async likeOrDislikeTweet({ commit, dispatch }, { tweet, liker, receiver }) {
         commit(SET_LOADING, true, { root: true });
-
         try {
             const data = await api.put(`/tweets/${tweet.id}/like`);
 
             if (data.status === 'added') {
                 commit(LIKE_TWEET, {
                     id: tweet.id,
-                    userId: user.id
+                    userId: liker.id
                 });
-                if (tweet.author.notifications) {
-                    const formData = new FormData();
-                    formData.append('receiver', tweet.author.id);
-                    formData.append('liker', user.id);
-                    formData.append('tweet', tweet.id);
-
-                    api.post(`/users/${tweet.author.id}/notification`, formData);
-                }
+                dispatch('sendNotification', { tweet, liker, receiver });
             } else {
                 commit(DISLIKE_TWEET, {
                     id: tweet.id,
-                    userId: user.id
+                    userId: liker.id
                 });
             }
 
@@ -174,4 +166,21 @@ export default {
             return Promise.reject(error);
         }
     },
+    async sendNotification(context, { tweet, liker, receiver }) {
+        try {
+            if (receiver.notifications && receiver.id !== liker.id) {
+                const formData = new FormData();
+                formData.append('receiver', receiver.id);
+                formData.append('liker', liker.id);
+                formData.append('liked_entity_id', tweet.id);
+                formData.append('type', 'tweet');
+
+                api.post(`/users/${receiver.id}/notification`, formData);
+            }
+
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
 };
