@@ -13,5 +13,11 @@ export default {
                 type: 'is-success',
             });
         },
+
+        showDefaultMessage(message) {
+            this.$buefy.toast.open({
+                message
+            });
+        }
     }
 };
