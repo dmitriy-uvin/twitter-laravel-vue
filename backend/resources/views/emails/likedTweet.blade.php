@@ -3,7 +3,7 @@
 # Your tweet was liked!
 
 Hello **{{ $receiver->first_name }} {{ $receiver->last_name }}**, we are glad to tell you that your tweet was liked by
-<a href="{{ env('FRONT_URL') }}/users/{{ $liker->id }}">{{ $liker->first_name }} {{ $liker->last_name }}</a>
+<u>{{ $liker->first_name }} {{ $liker->last_name }}</u>
 
 Your tweet:
 @component('mail::panel')
