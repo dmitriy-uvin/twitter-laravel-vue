@@ -1,5 +1,24 @@
 <template>
     <div class="user-container">
+        <div class="column">
+            <b-button
+                type="is-primary"
+                icon-left="comments"
+                @click="allTweets"
+            >
+                All Tweets
+            </b-button>
+        </div>
+        <div class="column">
+            <b-button
+                type="is-warning"
+                icon-left="heart"
+                @click="getOnlyLiked"
+            >
+                Liked Tweets
+            </b-button>
+        </div>
+
         <TweetPreviewList
             :tweets="tweets"
             @infinite="infiniteHandler"
@@ -11,7 +30,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import TweetPreviewList from '@/components/common/TweetPreviewList.vue';
 import NoContent from '@/components/common/NoContent.vue';
 import showStatusToast from '@/components/mixin/showStatusToast';
@@ -31,7 +50,8 @@ export default {
         page: 1,
         noContent: false,
         mediaViewSeen: null,
-        cardsViewSeen: null
+        cardsViewSeen: null,
+        onlyLiked: false
     }),
 
     async created() {
@@ -43,7 +63,6 @@ export default {
                 }
             });
             await this.fetchAllComments();
-            console.log(this.tweets);
             if (!this.tweets.length) {
                 this.noContent = true;
             }
@@ -51,7 +70,14 @@ export default {
             this.showErrorMessage(error.message);
         }
     },
-
+    computed: {
+        ...mapGetters('tweet', [
+            'tweetIsLikedByUser'
+        ]),
+        ...mapGetters('auth', {
+            user: 'getAuthenticatedUser'
+        })
+    },
     methods: {
         ...mapActions('tweet', [
             'fetchTweetsByUserId',
@@ -81,6 +107,17 @@ export default {
                 $state.complete();
             }
         },
+        async getOnlyLiked() {
+            this.tweets = this.tweets.filter(tweet => this.tweetIsLikedByUser(tweet.id, this.user.id));
+        },
+        async allTweets() {
+            this.tweets = await this.fetchTweetsByUserId({
+                userId: this.$route.params.id,
+                params: {
+                    page: 1
+                }
+            });
+        }
     },
     mounted() {
         if (localStorage.getItem('mediaViewSeen') === 'true') {
