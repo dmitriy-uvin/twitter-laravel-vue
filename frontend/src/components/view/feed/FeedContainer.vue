@@ -1,8 +1,7 @@
 <template>
     <div class="feed-container">
-
         <div class="navigation columns is-12 is-vcentered">
-            <div class="tile is-child is-4">
+            <div class="tile is-child is-2">
                 <b-button
                     class="btn-add-tweet"
                     rounded
@@ -16,6 +15,8 @@
                 </b-button>
             </div>
 
+            <div class="column is-3 column" />
+
             <div class="column is-2 column">
                 <b-button
                     type="is-info"
@@ -28,7 +29,6 @@
                 </b-button>
             </div>
 
-
             <div class="column is-2 column">
                 <b-button
                     type="is-danger"
@@ -40,25 +40,25 @@
                     <span v-else>DESC</span>
                 </b-button>
             </div>
-
-            <div class="column is-3"></div>
+            <div class="column is-2" />
             <div class="column is-2">
                 <button
                     class="btn-left"
                     :class="{ 'btn-active': cardsViewSeen }"
                     @click="changeViewToCards"
                 >
-                    <font-awesome-icon icon="th-large" size="2x"/>
+                    <font-awesome-icon icon="th-large" size="2x" />
                 </button>
                 <button
                     class="btn-right"
                     :class="{ 'btn-active': mediaViewSeen }"
                     @click="changeViewToMedia"
                 >
-                    <font-awesome-icon icon="bars" size="2x"/>
+                    <font-awesome-icon icon="bars" size="2x" />
                 </button>
             </div>
         </div>
+
         <TweetPreviewList
             :tweets="tweets"
             @infinite="infiniteHandler"
@@ -92,8 +92,7 @@ export default {
         page: 1,
         mediaViewSeen: true,
         cardsViewSeen: false,
-        sorting: 'dateDesc',
-        tweets: []
+        sorting: 'dateAsc'
     }),
     async created() {
         try {
@@ -101,7 +100,6 @@ export default {
                 page: 1
             });
             await this.fetchAllComments();
-            this.tweets = this.tweetsSortedByCreatedDateDesc;
         } catch (error) {
             this.showErrorMessage(error.message);
         }
@@ -122,7 +120,22 @@ export default {
         ]),
         ...mapGetters('comment', [
             'getCommentsByTweetId'
-        ])
+        ]),
+        // eslint-disable-next-line consistent-return,vue/return-in-computed-property
+        tweets() {
+            if (this.sorting === 'dateDesc') {
+                return this.tweetsSortedByCreatedDateAsc;
+            }
+            if (this.sorting === 'dateAsc') {
+                return this.tweetsSortedByCreatedDateDesc;
+            }
+            if (this.sorting === 'likesDesc') {
+                return this.tweetsSortedByLikesCountAsc;
+            }
+            if (this.sorting === 'likesAsc') {
+                return this.tweetsSortedByLikesCountDesc;
+            }
+        }
     },
 
     methods: {
@@ -132,7 +145,6 @@ export default {
         ...mapActions('comment', [
             'fetchAllComments'
         ]),
-
         changeViewToMedia() {
             this.mediaViewSeen = true;
             this.cardsViewSeen = false;
@@ -153,7 +165,6 @@ export default {
         async infiniteHandler($state) {
             try {
                 const tweets = await this.fetchTweets({ page: this.page + 1 });
-
                 if (tweets.length) {
                     this.page += 1;
                     $state.loaded();
@@ -168,22 +179,18 @@ export default {
 
         sortByDate() {
             if (this.sorting === 'dateDesc') {
-                this.tweets = this.tweetsSortedByCreatedDateAsc;
                 this.sorting = 'dateAsc';
             } else if (this.sorting === 'dateAsc' || this.sorting !== 'dateDesc') {
-                this.tweets = this.tweetsSortedByCreatedDateDesc;
                 this.sorting = 'dateDesc';
             }
         },
         sortByLikes() {
             if (this.sorting === 'likesDesc') {
-                this.tweets = this.tweetsSortedByLikesCountAsc;
                 this.sorting = 'likesAsc';
             } else if (this.sorting === 'likesAsc' || this.sorting !== 'likesDesc') {
-                this.tweets = this.tweetsSortedByLikesCountDesc;
                 this.sorting = 'likesDesc';
             }
-        }
+        },
     },
     async mounted() {
         if (localStorage.getItem('mediaViewSeen') === 'true') {
