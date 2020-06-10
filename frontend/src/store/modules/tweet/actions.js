@@ -35,6 +35,7 @@ export default {
         try {
             const tweets = await api.get(`/users/${userId}/tweets`, params);
 
+            commit(SET_TWEETS, tweets);
             commit(SET_LOADING, false, { root: true });
 
             return Promise.resolve(

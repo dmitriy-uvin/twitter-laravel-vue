@@ -30,8 +30,8 @@ export default {
         tweets: [],
         page: 1,
         noContent: false,
-        mediaViewSeen: true,
-        cardsViewSeen: false
+        mediaViewSeen: null,
+        cardsViewSeen: null
     }),
 
     async created() {
@@ -42,7 +42,8 @@ export default {
                     page: 1
                 }
             });
-
+            await this.fetchAllComments();
+            console.log(this.tweets);
             if (!this.tweets.length) {
                 this.noContent = true;
             }
@@ -54,6 +55,9 @@ export default {
     methods: {
         ...mapActions('tweet', [
             'fetchTweetsByUserId',
+        ]),
+        ...mapActions('comment', [
+            'fetchAllComments',
         ]),
 
         async infiniteHandler($state) {
