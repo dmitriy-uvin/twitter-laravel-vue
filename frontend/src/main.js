@@ -13,7 +13,10 @@ import {
     faEdit,
     faTrash,
     faExclamationCircle,
-    faCopy
+    faCopy,
+    faBars,
+    faThLarge,
+    faClock,
 } from '@fortawesome/free-solid-svg-icons';
 import {
     faTwitter,
@@ -40,7 +43,10 @@ library.add(
     faEdit,
     faTrash,
     faExclamationCircle,
-    faCopy
+    faCopy,
+    faBars,
+    faThLarge,
+    faClock,
 );
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
