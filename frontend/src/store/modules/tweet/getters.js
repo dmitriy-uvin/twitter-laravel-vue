@@ -1,9 +1,25 @@
 import moment from 'moment';
 
 export default {
-    tweetsSortedByCreatedDate: state => Object.values(state.tweets).sort(
+    tweetsSortedByCreatedDateDesc: state => Object.values(state.tweets).sort(
         (a, b) => (
             moment(b.created) - moment(a.created)
+        )
+    ),
+    tweetsSortedByCreatedDateAsc: state => Object.values(state.tweets).sort(
+        (a, b) => (
+            moment(a.created) - moment(b.created)
+        )
+    ),
+
+    tweetsSortedByLikesCountAsc: state => Object.values(state.tweets).sort(
+        (a, b) => (
+            a.likesCount - b.likesCount
+        )
+    ),
+    tweetsSortedByLikesCountDesc: state => Object.values(state.tweets).sort(
+        (a, b) => (
+            b.likesCount - a.likesCount
         )
     ),
 

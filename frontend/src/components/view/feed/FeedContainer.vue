@@ -1,40 +1,71 @@
 <template>
     <div class="feed-container">
-        <div class="navigation">
-            <b-button
-                class="btn-add-tweet"
-                rounded
-                size="is-medium"
-                type="is-danger"
-                icon-left="twitter"
-                icon-pack="fab"
-                @click="onAddTweetClick"
-            >
-                Tweet :)
-            </b-button>
-            <div class="buttons">
+        <div class="navigation columns is-12 is-vcentered">
+            <div class="tile is-child is-2">
+                <b-button
+                    class="btn-add-tweet"
+                    rounded
+                    size="is-medium"
+                    type="is-danger"
+                    icon-left="twitter"
+                    icon-pack="fab"
+                    @click="onAddTweetClick"
+                >
+                    Tweet :)
+                </b-button>
+            </div>
+
+            <div class="column is-3 column" />
+
+            <div class="column is-2 column">
+                <b-button
+                    type="is-info"
+                    icon-left="clock"
+                    @click="sortByDate"
+                >
+                    Date:
+                    <span v-if="sorting==='dateDesc'">ASC</span>
+                    <span v-else>DESC</span>
+                </b-button>
+            </div>
+
+            <div class="column is-2 column">
+                <b-button
+                    type="is-danger"
+                    icon-left="heart"
+                    @click="sortByLikes"
+                >
+                    Likes:
+                    <span v-if="sorting==='likesDesc'">ASC</span>
+                    <span v-else>DESC</span>
+                </b-button>
+            </div>
+            <div class="column is-2" />
+            <div class="column is-2">
                 <button
                     class="btn-left"
                     :class="{ 'btn-active': cardsViewSeen }"
                     @click="changeViewToCards"
                 >
-                    <img src="https://img.icons8.com/ios-filled/24/000000/health-data.png" />
+                    <font-awesome-icon icon="th-large" size="2x" />
                 </button>
                 <button
                     class="btn-right"
                     :class="{ 'btn-active': mediaViewSeen }"
                     @click="changeViewToMedia"
                 >
-                    <img src="https://img.icons8.com/ios-filled/24/000000/menu.png" />
+                    <font-awesome-icon icon="bars" size="2x" />
                 </button>
             </div>
         </div>
+
         <TweetPreviewList
             :tweets="tweets"
             @infinite="infiniteHandler"
             :cards-view-seen="cardsViewSeen"
             :media-view-seen="mediaViewSeen"
         />
+
         <b-modal :active.sync="isNewTweetModalActive" has-modal-card>
             <NewTweetForm />
         </b-modal>
@@ -60,7 +91,8 @@ export default {
         isNewTweetModalActive: false,
         page: 1,
         mediaViewSeen: true,
-        cardsViewSeen: false
+        cardsViewSeen: false,
+        sorting: 'dateAsc'
     }),
     async created() {
         try {
@@ -80,12 +112,30 @@ export default {
         pusher.unsubscribe('private-tweets');
     },
     computed: {
-        ...mapGetters('tweet', {
-            tweets: 'tweetsSortedByCreatedDate'
-        }),
+        ...mapGetters('tweet', [
+            'tweetsSortedByCreatedDateDesc',
+            'tweetsSortedByCreatedDateAsc',
+            'tweetsSortedByLikesCountDesc',
+            'tweetsSortedByLikesCountAsc',
+        ]),
         ...mapGetters('comment', [
             'getCommentsByTweetId'
         ]),
+        // eslint-disable-next-line consistent-return,vue/return-in-computed-property
+        tweets() {
+            if (this.sorting === 'dateDesc') {
+                return this.tweetsSortedByCreatedDateAsc;
+            }
+            if (this.sorting === 'dateAsc') {
+                return this.tweetsSortedByCreatedDateDesc;
+            }
+            if (this.sorting === 'likesDesc') {
+                return this.tweetsSortedByLikesCountAsc;
+            }
+            if (this.sorting === 'likesAsc') {
+                return this.tweetsSortedByLikesCountDesc;
+            }
+        }
     },
 
     methods: {
@@ -95,7 +145,6 @@ export default {
         ...mapActions('comment', [
             'fetchAllComments'
         ]),
-
         changeViewToMedia() {
             this.mediaViewSeen = true;
             this.cardsViewSeen = false;
@@ -116,7 +165,6 @@ export default {
         async infiniteHandler($state) {
             try {
                 const tweets = await this.fetchTweets({ page: this.page + 1 });
-
                 if (tweets.length) {
                     this.page += 1;
                     $state.loaded();
@@ -128,8 +176,23 @@ export default {
                 $state.complete();
             }
         },
+
+        sortByDate() {
+            if (this.sorting === 'dateDesc') {
+                this.sorting = 'dateAsc';
+            } else if (this.sorting === 'dateAsc' || this.sorting !== 'dateDesc') {
+                this.sorting = 'dateDesc';
+            }
+        },
+        sortByLikes() {
+            if (this.sorting === 'likesDesc') {
+                this.sorting = 'likesAsc';
+            } else if (this.sorting === 'likesAsc' || this.sorting !== 'likesDesc') {
+                this.sorting = 'likesDesc';
+            }
+        },
     },
-    mounted() {
+    async mounted() {
         if (localStorage.getItem('mediaViewSeen') === 'true') {
             this.mediaViewSeen = true;
             this.cardsViewSeen = false;
@@ -148,16 +211,12 @@ export default {
             localStorage.setItem('cardsViewSeen', newCardsViewSeen);
         }
     }
-
 };
 </script>
 
 <style lang="scss" scoped>
 @import '~bulma/sass/utilities/initial-variables';
 
-.buttons {
-    float: right;
-}
 .btn-left, .btn-right {
     border: none;
     padding: 10px;
@@ -197,5 +256,8 @@ export default {
         font-size: 1rem;
     }
 }
-
+.sort-tag {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
 </style>

@@ -1,7 +1,7 @@
 import { userMapper } from '@/services/Normalizer';
 import {
     SET_LOADING,
-    SET_TWEET_LIKED_USERS
+    SET_LIKED_USERS
 } from './mutationTypes';
 
 
@@ -10,7 +10,7 @@ export default {
         state.isLoading = isLoading;
     },
 
-    [SET_TWEET_LIKED_USERS]: (state, users) => {
+    [SET_LIKED_USERS]: (state, users) => {
         state.likedUsers = users.map(user => userMapper(user));
     }
 };

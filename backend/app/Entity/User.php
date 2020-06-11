@@ -17,6 +17,7 @@ use Illuminate\Notifications\Notifiable;
  * @property int $id
  * @property string $name
  * @property string $nickname
+ * @property bool $notifications
  * @property string $email
  * @property string $password
  * @property string|null $profile_image
@@ -36,6 +37,7 @@ final class User extends Authenticatable implements JWTSubject
         'first_name',
         'last_name',
         'nickname',
+        'notifications',
         'email',
         'password',
         'profile_image'
@@ -129,6 +131,11 @@ final class User extends Authenticatable implements JWTSubject
     public function getNickName(): string
     {
         return $this->nickname;
+    }
+
+    public function getNotifications(): bool
+    {
+        return (bool)$this->notifications;
     }
 
     public function getPassword(): string

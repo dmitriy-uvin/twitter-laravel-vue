@@ -100,7 +100,8 @@ export default {
         email,
         firstName,
         lastName,
-        nickname
+        nickname,
+        notifications
     }) {
         commit(SET_LOADING, true, { root: true });
 
@@ -109,7 +110,8 @@ export default {
                 email,
                 first_name: firstName,
                 last_name: lastName,
-                nickname
+                nickname,
+                notifications
             });
 
             commit(SET_AUTHENTICATED_USER, data,);

@@ -121,20 +121,21 @@ export default {
             return Promise.reject(error);
         }
     },
-    async likeOrDislikeComment({ commit }, { id, userId }) {
+    async likeOrDislikeComment({ commit, dispatch }, { comment, liker, receiver }) {
         commit(SET_LOADING, true, { root: true });
         try {
-            const response = await api.put(`/comments/${id}/like`);
+            const response = await api.put(`/comments/${comment.id}/like`);
 
             if (response.status === 'added') {
                 commit(LIKE_COMMENT, {
-                    id,
-                    userId
+                    id: comment.id,
+                    userId: liker.id
                 });
+                dispatch('sendNotification', { comment, liker, receiver });
             } else {
                 commit(DISLIKE_COMMENT, {
-                    id,
-                    userId
+                    id: comment.id,
+                    userId: liker.id
                 });
             }
 
@@ -144,6 +145,23 @@ export default {
         } catch (error) {
             commit(SET_LOADING, false, { root: true });
 
+            return Promise.reject(error);
+        }
+    },
+    async sendNotification(context, { comment, liker, receiver }) {
+        try {
+            if (receiver.notifications && receiver.id !== liker.id) {
+                const formData = new FormData();
+                formData.append('receiver', receiver.id);
+                formData.append('liker', liker.id);
+                formData.append('liked_entity_id', comment.id);
+                formData.append('type', 'comment');
+
+                api.post(`/users/${receiver.id}/notification`, formData);
+            }
+
+            return Promise.resolve();
+        } catch (error) {
             return Promise.reject(error);
         }
     }

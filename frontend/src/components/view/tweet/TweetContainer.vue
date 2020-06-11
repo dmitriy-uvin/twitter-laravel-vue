@@ -76,6 +76,21 @@
                                             </span>
                                         </a>
                                     </b-tooltip>
+
+                                    <b-tooltip label="Share" animated>
+                                        <a
+                                            class="level-item share-icon"
+                                            style="vertical-align: middle"
+                                            @click="share"
+                                        >
+                                            <span
+                                                class="icon is-medium has-text-info"
+                                            >
+                                                <font-awesome-icon icon="share" />
+
+                                            </span>
+                                        </a>
+                                    </b-tooltip>
                                 </div>
                             </nav>
                         </div>
@@ -113,7 +128,11 @@
         </b-modal>
 
         <b-modal :active.sync="isTweetLikedUsersModal" has-modal-card>
-            <TweetLikedUsersModal :liked-users="likedUsers"/>
+            <TweetLikedUsersModal :liked-users="likedUsers" />
+        </b-modal>
+
+        <b-modal :active.sync="isShareModal" has-modal-card>
+            <ShareModal :tweet="tweet"/>
         </b-modal>
     </div>
 </template>
@@ -126,6 +145,7 @@ import EditTweetForm from './EditTweetForm.vue';
 import TweetLikedUsersModal from './TweetLikedUsersModal.vue';
 import DefaultAvatar from '../../common/DefaultAvatar.vue';
 import showStatusToast from '../../mixin/showStatusToast';
+import ShareModal from './ShareModal.vue';
 
 export default {
     name: 'TweetContainer',
@@ -134,13 +154,15 @@ export default {
         NewCommentForm,
         EditTweetForm,
         DefaultAvatar,
-        TweetLikedUsersModal
+        TweetLikedUsersModal,
+        ShareModal
     },
     mixins: [showStatusToast],
     data: () => ({
         isEditTweetModalActive: false,
         isImageModalActive: false,
         isTweetLikedUsersModal: false,
+        isShareModal: false,
         likedUsers: []
     }),
     async created() {
@@ -182,6 +204,7 @@ export default {
         onEditTweet() {
             this.isEditTweetModalActive = true;
         },
+
         onDeleteTweet() {
             this.$buefy.dialog.confirm({
                 title: 'Deleting tweet',
@@ -199,19 +222,23 @@ export default {
                 }
             });
         },
+
         showImageModal() {
             this.isImageModalActive = true;
         },
+
         async onLikeOrDislikeTweet() {
             try {
                 await this.likeOrDislikeTweet({
-                    id: this.tweet.id,
-                    userId: this.user.id
+                    tweet: this.tweet,
+                    liker: this.user,
+                    receiver: this.tweet.author
                 });
             } catch (error) {
                 console.error(error.message);
             }
         },
+
         async updateComponent() {
             try {
                 await this.fetchTweetById(this.$route.params.id);
@@ -227,6 +254,10 @@ export default {
             );
 
             this.isTweetLikedUsersModal = true;
+        },
+
+        share() {
+            this.isShareModal = true;
         }
     },
 };
@@ -263,5 +294,9 @@ export default {
 }
 .column {
     padding-bottom: 0;
+}
+
+.share-icon {
+    margin-left: 5px;
 }
 </style>

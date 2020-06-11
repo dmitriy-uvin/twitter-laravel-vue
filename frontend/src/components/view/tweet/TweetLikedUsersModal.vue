@@ -5,8 +5,14 @@
         </header>
 
         <section class="modal-card-body">
-
-            <article class="media" v-for="likedUser in getTweetLikedUsers" :key="likedUser.id">
+            <article v-if="getLikedUsers.length===0">
+                <h2>There is no users who liked your tweet :(</h2>
+            </article>
+            <article
+                v-else
+                class="media"
+                v-for="likedUser in getLikedUsers"
+                :key="likedUser.id">
                 <router-link
                     v-if="likedUser.avatar"
                     :to="{ name: 'user-page', params: { id: likedUser.id } }"
@@ -64,7 +70,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['getTweetLikedUsers'])
+        ...mapGetters(['getLikedUsers'])
     }
 };
 </script>

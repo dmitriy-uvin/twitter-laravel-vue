@@ -85,7 +85,8 @@ final class AuthController extends ApiController
                 $httpRequest->get('email'),
                 $httpRequest->get('first_name'),
                 $httpRequest->get('last_name'),
-                $httpRequest->get('nickname')
+                $httpRequest->get('nickname'),
+                $httpRequest->get('notifications')
             )
         );
 
