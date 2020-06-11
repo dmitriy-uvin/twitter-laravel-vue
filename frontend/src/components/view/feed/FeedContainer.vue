@@ -99,7 +99,6 @@ export default {
             await this.fetchTweets({
                 page: 1
             });
-            await this.fetchAllComments();
         } catch (error) {
             this.showErrorMessage(error.message);
         }
@@ -141,9 +140,6 @@ export default {
     methods: {
         ...mapActions('tweet', [
             'fetchTweets',
-        ]),
-        ...mapActions('comment', [
-            'fetchAllComments'
         ]),
         changeViewToMedia() {
             this.mediaViewSeen = true;
