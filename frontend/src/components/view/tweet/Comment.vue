@@ -79,6 +79,7 @@
                 </b-tooltip>
             </div>
         </div>
+
         <b-modal :active.sync="isEditCommentModalActive" has-modal-card>
             <EditCommentForm :comment="comment" @updated="updatePage" />
         </b-modal>
@@ -107,7 +108,7 @@ export default {
     components: {
         DefaultAvatar,
         EditCommentForm,
-        CommentLikedUsersModal
+        CommentLikedUsersModal,
     },
     data: () => ({
         isEditCommentModalActive: false,
@@ -177,7 +178,6 @@ export default {
             }
         },
         async openCommentLikedUsersModal() {
-            // console.log(this.comment);
             await this.getUsersByIds(
                 this.comment.likes.map(like => like.userId)
             );
