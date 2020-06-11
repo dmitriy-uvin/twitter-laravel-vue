@@ -104,7 +104,7 @@
                     </div>
                 </div>
 
-                <template v-for="comment in getCommentsByTweetId(tweet.id)">
+                <template v-for="comment in comments(tweet.id)">
                     <Comment
                         :key="comment.id"
                         :comment="comment"
@@ -145,6 +145,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { ADD_COMMENT } from '@/store/modules/comment/mutationTypes';
+import { pusher } from '@/services/Pusher';
 import InfiniteLoading from 'vue-infinite-loading';
 import Comment from './Comment.vue';
 import NewCommentForm from './NewCommentForm.vue';
@@ -184,6 +186,13 @@ export default {
         } catch (error) {
             console.error(error.message);
         }
+        const channel = pusher.subscribe('private-comments');
+        channel.bind('comment.added', (data) => {
+            this.$store.commit(`comment/${ADD_COMMENT}`, data.comment);
+        });
+    },
+    beforeDestroy() {
+        pusher.unsubscribe('private-comments');
     },
     computed: {
         ...mapGetters('auth', {
@@ -194,9 +203,9 @@ export default {
             'isTweetOwner',
             'tweetIsLikedByUser'
         ]),
-        ...mapGetters('comment', [
-            'getCommentsByTweetId'
-        ]),
+        ...mapGetters('comment', {
+            comments: 'getCommentsByTweetId'
+        }),
         tweet() {
             return this.getTweetById(this.$route.params.id);
         },
