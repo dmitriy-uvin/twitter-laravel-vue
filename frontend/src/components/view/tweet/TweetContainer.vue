@@ -46,7 +46,7 @@
                                             <span
                                                 class="icon is-medium has-text-info"
                                                 :class="{
-                                                    'has-text-danger': tweetIsCommentedByUser(tweet.id, user.id)
+                                                    'has-text-danger': tweet.isCommented
                                                 }"
                                             >
                                                 <font-awesome-icon icon="comments" />
@@ -195,8 +195,7 @@ export default {
             'tweetIsLikedByUser'
         ]),
         ...mapGetters('comment', [
-            'getCommentsByTweetId',
-            'tweetIsCommentedByUser'
+            'getCommentsByTweetId'
         ]),
         tweet() {
             return this.getTweetById(this.$route.params.id);
