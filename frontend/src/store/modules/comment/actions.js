@@ -13,33 +13,18 @@ import {
 import { DECREMENT_COMMENTS_COUNT, INCREMENT_COMMENTS_COUNT } from '../tweet/mutationTypes';
 
 export default {
-    async fetchComments({ commit }, tweetId) {
+    async fetchComments({ commit }, { tweetId, page }) {
         commit(SET_LOADING, true, { root: true });
         try {
             const comments = await api.get(`/tweets/${tweetId}/comments`, {
+                page,
                 direction: 'asc',
             });
 
             commit(SET_COMMENTS, comments);
             commit(SET_LOADING, false, { root: true });
 
-            return Promise.resolve();
-        } catch (error) {
-            commit(SET_LOADING, false, { root: true });
-
-            return Promise.reject(error);
-        }
-    },
-
-    async fetchAllComments({ commit }) {
-        commit(SET_LOADING, true, { root: true });
-
-        try {
-            const comments = await api.get('/comments');
-
-            commit(SET_COMMENTS, comments);
-            commit(SET_LOADING, false, { root: true });
-            return Promise.resolve();
+            return Promise.resolve(comments);
         } catch (error) {
             commit(SET_LOADING, false, { root: true });
 
