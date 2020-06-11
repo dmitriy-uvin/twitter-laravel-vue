@@ -43,6 +43,7 @@ export const tweetMapper = tweet => ({
     created: tweet.created_at,
     author: userMapper(tweet.author),
     commentsCount: tweet.comments_count,
+    isCommented: tweet.isCommented,
     likesCount: tweet.likes_count,
     likes: tweet.likes.map(likeMapper)
 });
