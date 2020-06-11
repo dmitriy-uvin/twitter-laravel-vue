@@ -113,6 +113,12 @@
                     />
                 </template>
 
+                <infinite-loading @infinite="infiniteHandler">
+                    <div slot="no-more" />
+                    <div slot="no-results" />
+                    <div slot="spinner" />
+                </infinite-loading>
+
                 <NewCommentForm :tweet-id="tweet.id" />
             </div>
         </article>
@@ -139,6 +145,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import InfiniteLoading from 'vue-infinite-loading';
 import Comment from './Comment.vue';
 import NewCommentForm from './NewCommentForm.vue';
 import EditTweetForm from './EditTweetForm.vue';
@@ -155,7 +162,8 @@ export default {
         EditTweetForm,
         DefaultAvatar,
         TweetLikedUsersModal,
-        ShareModal
+        ShareModal,
+        InfiniteLoading
     },
     mixins: [showStatusToast],
     data: () => ({
@@ -163,12 +171,16 @@ export default {
         isImageModalActive: false,
         isTweetLikedUsersModal: false,
         isShareModal: false,
-        likedUsers: []
+        likedUsers: [],
+        page: 1,
     }),
     async created() {
         try {
             await this.fetchTweetById(this.$route.params.id);
-            this.fetchComments(this.tweet.id);
+            await this.fetchComments({
+                tweetId: this.tweet.id,
+                page: 1
+            });
         } catch (error) {
             console.error(error.message);
         }
@@ -201,6 +213,20 @@ export default {
         ...mapActions('comment', [
             'fetchComments',
         ]),
+        async infiniteHandler($state) {
+            try {
+                const comments = await this.fetchComments({ tweetId: this.tweet.id, page: this.page + 1 });
+                if (comments.length) {
+                    this.page += 1;
+                    $state.loaded();
+                } else {
+                    $state.complete();
+                }
+            } catch (error) {
+                this.showErrorMessage(error.message);
+                $state.complete();
+            }
+        },
         onEditTweet() {
             this.isEditTweetModalActive = true;
         },
@@ -258,7 +284,8 @@ export default {
 
         share() {
             this.isShareModal = true;
-        }
+        },
+
     },
 };
 </script>
