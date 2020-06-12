@@ -42,7 +42,6 @@
                         </b-checkbox>
                     </b-field>
 
-
                     <b-button type="is-primary" @click="onSaveClick">Save</b-button>
                 </div>
             </div>
@@ -87,7 +86,10 @@ export default {
     },
 
     methods: {
-        ...mapActions('auth', ['updateProfile', 'updateProfileImage']),
+        ...mapActions('auth', [
+            'updateProfile',
+            'updateProfileImage'
+        ]),
 
         async onSaveClick() {
             try {
