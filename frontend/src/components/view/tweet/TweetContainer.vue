@@ -276,7 +276,10 @@ export default {
         async updateComponent() {
             try {
                 await this.fetchTweetById(this.$route.params.id);
-                this.fetchComments(this.tweet.id);
+                this.fetchComments({
+                    tweetId: this.tweet.id,
+                    page: 1
+                });
             } catch (error) {
                 console.error(error.message);
             }
