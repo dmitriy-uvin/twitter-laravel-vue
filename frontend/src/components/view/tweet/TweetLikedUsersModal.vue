@@ -72,9 +72,7 @@ export default {
     computed: {
         ...mapGetters([
             'getLikedUsers'
-        ])
-    },
-    methods: {
+        ]),
         ifNoLikedUsers() {
             return this.getLikedUsers.length === 0;
         }
