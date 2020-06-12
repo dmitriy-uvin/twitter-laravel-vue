@@ -30,7 +30,7 @@ final class RegisterAction
         ]);
         $token = auth()->login($user);
 
-        $this->mailer->to($user)->send(new WelcomeEmail());
+        $this->mailer->to($user)->send(new WelcomeEmail($user));
 
         return new AuthenticationResponse(
             $token,
