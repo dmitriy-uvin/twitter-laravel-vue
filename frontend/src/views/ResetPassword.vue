@@ -5,47 +5,45 @@
                 <div class="columns is-mobile is-centered">
                     <div class="column is-three-quarters-mobile is-two-thirds-tablet is-one-third-desktop">
                         <div class="box shadow-box">
-                            <p class="subtitle">
-                                Don't have an account?
-                                <router-link class="link" to="/auth/sign-up">
-                                    Sign up
-                                </router-link>
-                            </p>
-
                             <form
                                 class="form"
                                 @submit.prevent
                                 novalidate="true"
                             >
-                                <b-field label="Email">
+                                <b-field label="User Email">
                                     <b-input
                                         v-model="user.email"
-                                        name="email"
+                                        name="password"
+                                        autofocus
+                                        readonly
+                                    />
+                                </b-field>
+
+                                <b-field label="New Password">
+                                    <b-input
+                                        v-model="user.password"
+                                        type="password"
+                                        name="password"
                                         autofocus
                                     />
                                 </b-field>
 
-                                <b-field label="Password">
+                                <b-field label="Confirm Password">
                                     <b-input
+                                        v-model="user.confirmPassword"
                                         type="password"
-                                        v-model="user.password"
-                                        @keyup.native.enter="onLogin"
+                                        name="confirmPassword"
+                                        autofocus
                                     />
                                 </b-field>
-
-                                <p class="subtitle has-text-centered">
-                                    <router-link :to="{ name: 'password.forgot' }">
-                                        Forgot your password?
-                                    </router-link>
-                                </p>
 
                                 <div class="has-text-centered">
                                     <button
                                         type="button"
                                         class="button is-primary is-rounded"
-                                        @click="onLogin"
+                                        @click="onReset"
                                     >
-                                        Sign in
+                                        Reset
                                     </button>
                                 </div>
                             </form>
@@ -62,34 +60,38 @@ import { mapActions } from 'vuex';
 import showStatusToast from '../components/mixin/showStatusToast';
 
 export default {
-    name: 'SignInPage',
-
+    name: 'ResetPassword',
     mixins: [showStatusToast],
-
     data: () => ({
         user: {
             email: '',
-            password: '',
+            confirmPassword: '',
+            password: ''
         },
+        token: ''
     }),
-
+    created() {
+        this.user.email = this.$route.params.email;
+        this.token = this.$route.query.token;
+    },
     methods: {
         ...mapActions('auth', [
-            'signIn',
+            'resetPassword',
+            'signIn'
         ]),
-
-        onLogin() {
-            this.signIn(this.user)
-                .then(() => {
-                    this.showSuccessMessage('Welcome!');
-
-                    this.$router.push({ path: '/' }).catch(() => {});
+        onReset() {
+            this.resetPassword({ user: this.user, token: this.token })
+                .then(async () => {
+                    this.showSuccessMessage('Password was successfully reseted!');
+                    await this.signIn({ email: this.user.email, password: this.user.password });
+                    this.$router.push({ name: 'feed' });
                 })
                 .catch(error => this.showErrorMessage(error.message));
-        },
-    },
+        }
+    }
 };
 </script>
 
 <style scoped>
+
 </style>

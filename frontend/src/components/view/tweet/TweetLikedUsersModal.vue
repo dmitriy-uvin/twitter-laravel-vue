@@ -5,7 +5,7 @@
         </header>
 
         <section class="modal-card-body">
-            <article v-if="getLikedUsers.length===0">
+            <article v-if="ifNoLikedUsers">
                 <h2>There is no users who liked your tweet :(</h2>
             </article>
             <article
@@ -70,7 +70,12 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['getLikedUsers'])
+        ...mapGetters([
+            'getLikedUsers'
+        ]),
+        ifNoLikedUsers() {
+            return this.getLikedUsers.length === 0;
+        }
     }
 };
 </script>

@@ -5,13 +5,6 @@
                 <div class="columns is-mobile is-centered">
                     <div class="column is-three-quarters-mobile is-two-thirds-tablet is-one-third-desktop">
                         <div class="box shadow-box">
-                            <p class="subtitle">
-                                Don't have an account?
-                                <router-link class="link" to="/auth/sign-up">
-                                    Sign up
-                                </router-link>
-                            </p>
-
                             <form
                                 class="form"
                                 @submit.prevent
@@ -25,27 +18,13 @@
                                     />
                                 </b-field>
 
-                                <b-field label="Password">
-                                    <b-input
-                                        type="password"
-                                        v-model="user.password"
-                                        @keyup.native.enter="onLogin"
-                                    />
-                                </b-field>
-
-                                <p class="subtitle has-text-centered">
-                                    <router-link :to="{ name: 'password.forgot' }">
-                                        Forgot your password?
-                                    </router-link>
-                                </p>
-
                                 <div class="has-text-centered">
                                     <button
                                         type="button"
                                         class="button is-primary is-rounded"
-                                        @click="onLogin"
+                                        @click="onSendResetLink"
                                     >
-                                        Sign in
+                                        Send Reset Password Link
                                     </button>
                                 </div>
                             </form>
@@ -62,28 +41,24 @@ import { mapActions } from 'vuex';
 import showStatusToast from '../components/mixin/showStatusToast';
 
 export default {
-    name: 'SignInPage',
+    name: 'ForgotPassword',
 
     mixins: [showStatusToast],
 
     data: () => ({
         user: {
             email: '',
-            password: '',
         },
     }),
 
     methods: {
         ...mapActions('auth', [
-            'signIn',
+            'forgotPassword'
         ]),
-
-        onLogin() {
-            this.signIn(this.user)
+        onSendResetLink() {
+            this.forgotPassword(this.user.email)
                 .then(() => {
-                    this.showSuccessMessage('Welcome!');
-
-                    this.$router.push({ path: '/' }).catch(() => {});
+                    this.showSuccessMessage('Email with reset link was sent!');
                 })
                 .catch(error => this.showErrorMessage(error.message));
         },

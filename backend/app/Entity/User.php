@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Notifications\ResetPasswordNotification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use InvalidArgumentException;
@@ -161,5 +162,10 @@ final class User extends Authenticatable implements JWTSubject
     public function tweets(): HasMany
     {
         return $this->hasMany(Tweet::class, 'author_id');
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($this->getEmail(), $token));
     }
 }

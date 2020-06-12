@@ -62,7 +62,6 @@ export default {
                     page: 1
                 }
             });
-            await this.fetchAllComments();
             if (!this.tweets.length) {
                 this.noContent = true;
             }
@@ -81,9 +80,6 @@ export default {
     methods: {
         ...mapActions('tweet', [
             'fetchTweetsByUserId',
-        ]),
-        ...mapActions('comment', [
-            'fetchAllComments',
         ]),
 
         async infiniteHandler($state) {

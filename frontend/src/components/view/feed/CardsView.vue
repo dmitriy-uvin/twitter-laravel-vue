@@ -34,14 +34,13 @@
             <div class="content">
                 {{ tweet.text }}
                 <br>
-
                 <time><small class="created">{{ tweet.created | createdDate }}</small></time>
                 <nav class="level is-mobile">
                     <div class="level-left auto-cursor">
                         <a class="level-item auto-cursor">
                             <span
                                 class="icon is-medium has-text-info"
-                                :class="{ 'has-text-danger': tweetIsCommentedByUser(tweet.id, user.id) }"
+                                :class="{ 'has-text-danger': tweet.isCommented }"
                             >
                                 <font-awesome-icon icon="comments" />
                             </span>
@@ -64,7 +63,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 import DefaultAvatar from '../../common/DefaultAvatar.vue';
 
 export default {
@@ -84,16 +83,8 @@ export default {
         }),
         ...mapGetters('tweet', [
             'tweetIsLikedByUser',
-        ]),
-        ...mapGetters('comment', [
-            'tweetIsCommentedByUser'
         ])
     },
-    methods: {
-        ...mapActions('comment', [
-            'fetchAllComments'
-        ]),
-    }
 };
 </script>
 

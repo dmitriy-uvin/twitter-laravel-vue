@@ -5,7 +5,7 @@
         </header>
 
         <section class="modal-card-body">
-            <article v-if="getLikedUsers.length===0">
+            <article v-if="ifNoLikedUsers">
                 <h2>There is no users who liked your comment :(</h2>
             </article>
             <article
@@ -64,7 +64,12 @@ export default {
         DefaultAvatar
     },
     computed: {
-        ...mapGetters(['getLikedUsers'])
+        ...mapGetters([
+            'getLikedUsers'
+        ]),
+        ifNoLikedUsers() {
+            return this.getLikedUsers.length === 0;
+        }
     }
 };
 </script>

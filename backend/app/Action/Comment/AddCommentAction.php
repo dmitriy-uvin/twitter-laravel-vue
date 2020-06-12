@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Action\Comment;
 
 use App\Entity\Comment;
+use App\Events\CommentAddedEvent;
 use App\Exceptions\TweetNotFoundException;
 use App\Repository\CommentRepository;
 use App\Repository\TweetRepository;
@@ -38,6 +39,8 @@ final class AddCommentAction
         $comment->body = $request->getBody();
 
         $comment = $this->commentRepository->save($comment);
+
+        broadcast(new CommentAddedEvent($comment))->toOthers();
 
         return new AddCommentResponse($comment);
     }

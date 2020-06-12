@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Entity\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -11,6 +12,13 @@ class WelcomeEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    private $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     /**
      * Build the message.
      *
@@ -18,6 +26,11 @@ class WelcomeEmail extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        return $this->subject('Welcome!')->view('emails.welcome');
+        return $this
+            ->markdown('emails.welcome')
+            ->subject('Welcome!')
+            ->with([
+                'user' => $this->user
+            ]);
     }
 }

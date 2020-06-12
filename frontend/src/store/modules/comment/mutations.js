@@ -19,8 +19,7 @@ export default {
                 [comment.id]: commentMapper(comment)
             };
         });
-
-        state.comments = commentsByIdMap;
+        state.comments = { ...state.comments, ...commentsByIdMap };
     },
 
     [ADD_COMMENT]: (state, comment) => {

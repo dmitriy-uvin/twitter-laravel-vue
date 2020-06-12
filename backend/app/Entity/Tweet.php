@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 
 /**
@@ -89,6 +90,17 @@ final class Tweet extends Model
     {
         // cast to int, because if tweet doesn't have comments null will be returned
         return (int)$this->comments_count;
+    }
+
+    public function checkIfCommented(): bool
+    {
+        $comments = $this->comments;
+
+        $authorsIds = $comments->map(function($comment) {
+            return $comment->author_id;
+        });
+
+        return is_int($authorsIds->search(Auth::id()));
     }
 
     public function getLikesCount(): int

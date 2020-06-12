@@ -46,7 +46,7 @@
                                             <span
                                                 class="icon is-medium has-text-info"
                                                 :class="{
-                                                    'has-text-danger': tweetIsCommentedByUser(tweet.id, user.id)
+                                                    'has-text-danger': tweet.isCommented
                                                 }"
                                             >
                                                 <font-awesome-icon icon="comments" />
@@ -104,7 +104,7 @@
                     </div>
                 </div>
 
-                <template v-for="comment in getCommentsByTweetId(tweet.id)">
+                <template v-for="comment in comments(tweet.id)">
                     <Comment
                         :key="comment.id"
                         :comment="comment"
@@ -112,6 +112,12 @@
                         @updateData="updateComponent"
                     />
                 </template>
+
+                <infinite-loading @infinite="infiniteHandler">
+                    <div slot="no-more" />
+                    <div slot="no-results" />
+                    <div slot="spinner" />
+                </infinite-loading>
 
                 <NewCommentForm :tweet-id="tweet.id" />
             </div>
@@ -139,6 +145,9 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { ADD_COMMENT } from '@/store/modules/comment/mutationTypes';
+import { pusher } from '@/services/Pusher';
+import InfiniteLoading from 'vue-infinite-loading';
 import Comment from './Comment.vue';
 import NewCommentForm from './NewCommentForm.vue';
 import EditTweetForm from './EditTweetForm.vue';
@@ -155,7 +164,8 @@ export default {
         EditTweetForm,
         DefaultAvatar,
         TweetLikedUsersModal,
-        ShareModal
+        ShareModal,
+        InfiniteLoading
     },
     mixins: [showStatusToast],
     data: () => ({
@@ -163,15 +173,26 @@ export default {
         isImageModalActive: false,
         isTweetLikedUsersModal: false,
         isShareModal: false,
-        likedUsers: []
+        likedUsers: [],
+        page: 1,
     }),
     async created() {
         try {
             await this.fetchTweetById(this.$route.params.id);
-            this.fetchComments(this.tweet.id);
+            await this.fetchComments({
+                tweetId: this.tweet.id,
+                page: 1
+            });
         } catch (error) {
             console.error(error.message);
         }
+        const channel = pusher.subscribe('private-comments');
+        channel.bind('comment.added', (data) => {
+            this.$store.commit(`comment/${ADD_COMMENT}`, data.comment);
+        });
+    },
+    beforeDestroy() {
+        pusher.unsubscribe('private-comments');
     },
     computed: {
         ...mapGetters('auth', {
@@ -182,10 +203,9 @@ export default {
             'isTweetOwner',
             'tweetIsLikedByUser'
         ]),
-        ...mapGetters('comment', [
-            'getCommentsByTweetId',
-            'tweetIsCommentedByUser'
-        ]),
+        ...mapGetters('comment', {
+            comments: 'getCommentsByTweetId'
+        }),
         tweet() {
             return this.getTweetById(this.$route.params.id);
         },
@@ -201,6 +221,20 @@ export default {
         ...mapActions('comment', [
             'fetchComments',
         ]),
+        async infiniteHandler($state) {
+            try {
+                const comments = await this.fetchComments({ tweetId: this.tweet.id, page: this.page + 1 });
+                if (comments.length) {
+                    this.page += 1;
+                    $state.loaded();
+                } else {
+                    $state.complete();
+                }
+            } catch (error) {
+                this.showErrorMessage(error.message);
+                $state.complete();
+            }
+        },
         onEditTweet() {
             this.isEditTweetModalActive = true;
         },
@@ -242,7 +276,10 @@ export default {
         async updateComponent() {
             try {
                 await this.fetchTweetById(this.$route.params.id);
-                this.fetchComments(this.tweet.id);
+                this.fetchComments({
+                    tweetId: this.tweet.id,
+                    page: 1
+                });
             } catch (error) {
                 console.error(error.message);
             }
@@ -258,7 +295,8 @@ export default {
 
         share() {
             this.isShareModal = true;
-        }
+        },
+
     },
 };
 </script>

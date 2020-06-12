@@ -37,7 +37,7 @@
                         <a class="level-item auto-cursor">
                             <span
                                 class="icon is-medium has-text-info"
-                                :class="{ 'has-text-danger': tweetIsCommentedByUser(tweet.id, user.id) }"
+                                :class="{ 'has-text-danger': tweet.isCommented }"
                             >
                                 <font-awesome-icon icon="comments" />
                             </span>
@@ -78,9 +78,6 @@ export default {
         ...mapGetters('auth', {
             user: 'getAuthenticatedUser'
         }),
-        ...mapGetters('comment', [
-            'tweetIsCommentedByUser'
-        ]),
         ...mapGetters('tweet', [
             'tweetIsLikedByUser'
         ])

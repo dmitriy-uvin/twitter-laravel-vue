@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
+
     Route::group(['prefix' => 'auth', 'namespace' => 'Api\\Auth'], function () {
         Route::post('/register', 'AuthController@register');
         Route::post('/login', 'AuthController@login');
@@ -21,6 +22,8 @@ Route::prefix('v1')->group(function () {
         Route::put('/me', 'AuthController@update');
         Route::post('/me/image', 'AuthController@uploadProfileImage');
         Route::post('/logout', 'AuthController@logout');
+        Route::post('/password/forgot', 'ForgotPasswordController@sendResetLinkEmail');
+        Route::post('/password/reset', 'ResetPasswordController@reset');
     });
 
     Route::group([

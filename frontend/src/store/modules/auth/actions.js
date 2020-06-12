@@ -144,4 +144,45 @@ export default {
             return Promise.reject(error);
         }
     },
+
+    async forgotPassword({ commit }, email) {
+        commit(SET_LOADING, true, { root: true });
+
+        try {
+            const formData = new FormData();
+            formData.append('email', email);
+
+            await api.post('/auth/password/forgot', formData);
+
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.resolve();
+        } catch (error) {
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.reject(error);
+        }
+    },
+
+    async resetPassword({ commit }, { user, token }) {
+        commit(SET_LOADING, true, { root: true });
+
+        try {
+            const formData = new FormData();
+            formData.append('email', user.email);
+            formData.append('password', user.password);
+            formData.append('password_confirmation', user.confirmPassword);
+            formData.append('token', token);
+
+            await api.post('/auth/password/reset', formData);
+
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.resolve();
+        } catch (error) {
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.reject(error);
+        }
+    }
 };

@@ -27,6 +27,7 @@ final class TweetArrayPresenter implements CollectionAsArrayPresenter
             'created_at' => $tweet->getCreatedAt()->toDateTimeString(),
             'author' => $this->userPresenter->present($tweet->getAuthor()),
             'comments_count' => $tweet->getCommentsCount(),
+            'isCommented' => $tweet->checkIfCommented(),
             'likes_count' => $tweet->getLikesCount(),
             'likes' => $this->likeArrayPresenter->presentCollection($tweet->likes)
         ];
