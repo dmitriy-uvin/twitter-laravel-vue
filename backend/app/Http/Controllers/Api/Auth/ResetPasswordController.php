@@ -36,51 +36,10 @@ final class ResetPasswordController extends ApiController
         );
 
         return $response == Password::PASSWORD_RESET
-            ? $this->sendResetResponse($request, $response)
-            : $this->sendResetFailedResponse($request, $response);
+            ? $this->createSuccessResponse([
+                'email' => $request->get('email'),
+                'password' => $request->get('password')
+            ])
+            : $this->createErrorResponse('Failed resetting password', 500);
     }
-
-    protected function sendResetResponse(Request $request, $response)
-    {
-        return response()->json([
-            'status' => 'Password Reseted',
-            'response' => $response,
-        ], 200);
-    }
-
-
-    protected function sendResetFailedResponse(Request $request, $response)
-    {
-        return response()->json([
-            'status' => 'Something was wrong',
-            'response' => $response,
-        ], 500);
-    }
-
-    public function broker()
-    {
-        return Password::broker();
-    }
-
-    protected function resetPassword($user, $password)
-    {
-        $this->setUserPassword($user, $password);
-
-        $user->setRememberToken(Str::random(60));
-
-        $user->save();
-    }
-
-    protected function setUserPassword($user, $password)
-    {
-        $user->password = Hash::make($password);
-    }
-
-    protected function credentials(Request $request)
-    {
-        return $request->only(
-            'email', 'password', 'password_confirmation', 'token'
-        );
-    }
-
 }
