@@ -138,7 +138,9 @@ export default {
             'deleteComment',
             'likeOrDislikeComment'
         ]),
-        ...mapActions(['getUsersByIds']),
+        ...mapActions([
+            'getUsersByIds'
+        ]),
         onEditComment() {
             this.isEditCommentModalActive = true;
         },
@@ -188,7 +190,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .comment-menu {
     float: right;
     cursor: pointer;
