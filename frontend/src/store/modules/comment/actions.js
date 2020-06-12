@@ -68,6 +68,7 @@ export default {
             return Promise.reject(error);
         }
     },
+
     async editComment({ commit }, { id, body }) {
         commit(SET_LOADING, true, { root: true });
 
@@ -106,6 +107,7 @@ export default {
             return Promise.reject(error);
         }
     },
+
     async likeOrDislikeComment({ commit, dispatch }, { comment, liker, receiver }) {
         commit(SET_LOADING, true, { root: true });
         try {
@@ -133,6 +135,7 @@ export default {
             return Promise.reject(error);
         }
     },
+
     async sendNotification(context, { comment, liker, receiver }) {
         try {
             if (receiver.notifications && receiver.id !== liker.id) {
