@@ -68,7 +68,7 @@ export default {
             'getLikedUsers'
         ])
     },
-    method: {
+    methods: {
         ifNoLikedUsers() {
             return this.getLikedUsers.length === 0;
         }
