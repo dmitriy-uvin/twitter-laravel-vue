@@ -33,6 +33,12 @@
                                     />
                                 </b-field>
 
+                                <p class="subtitle has-text-centered">
+                                    <router-link :to="{ name: 'password.forgot' }">
+                                        Forgot your password?
+                                    </router-link>
+                                </p>
+
                                 <div class="has-text-centered">
                                     <button
                                         type="button"
