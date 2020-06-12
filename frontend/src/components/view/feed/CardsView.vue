@@ -34,7 +34,6 @@
             <div class="content">
                 {{ tweet.text }}
                 <br>
-
                 <time><small class="created">{{ tweet.created | createdDate }}</small></time>
                 <nav class="level is-mobile">
                     <div class="level-left auto-cursor">
