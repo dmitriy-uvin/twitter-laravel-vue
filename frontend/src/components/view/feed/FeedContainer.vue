@@ -1,7 +1,7 @@
 <template>
     <div class="feed-container">
-        <div class="navigation columns is-12 is-vcentered">
-            <div class="tile is-child is-2">
+        <div class="tile is-parent has-text-centered">
+            <div class="tile is-child column">
                 <b-button
                     class="btn-add-tweet"
                     rounded
@@ -14,10 +14,7 @@
                     Tweet :)
                 </b-button>
             </div>
-
-            <div class="column is-3 column" />
-
-            <div class="column is-2 column">
+            <div class="tile is-child column">
                 <b-button
                     type="is-info"
                     icon-left="clock"
@@ -28,8 +25,7 @@
                     <span v-else>DESC</span>
                 </b-button>
             </div>
-
-            <div class="column is-2 column">
+            <div class="tile is-child column">
                 <b-button
                     type="is-danger"
                     icon-left="heart"
@@ -40,8 +36,7 @@
                     <span v-else>DESC</span>
                 </b-button>
             </div>
-            <div class="column is-2" />
-            <div class="column is-2">
+            <div class="tile is-child column">
                 <button
                     class="btn-left"
                     :class="{ 'btn-active': cardsViewSeen }"
