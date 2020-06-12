@@ -152,8 +152,8 @@ export default {
             const formData = new FormData();
             formData.append('email', email);
 
-            const data = await api.post('/auth/password/forgot', formData);
-            console.log(data);
+            await api.post('/auth/password/forgot', formData);
+
             commit(SET_LOADING, false, { root: true });
 
             return Promise.resolve();
