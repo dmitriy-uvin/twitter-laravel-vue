@@ -37,6 +37,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/{id}', 'UserController@getUserById');
             Route::get('/{id}/tweets', 'TweetController@getTweetCollectionByUserId');
             Route::post('/{id}/notification', 'UserController@sendNotificationToUser');
+            Route::post('/', 'UserController@getUsersCollectionByIds');
         });
 
         Route::group([
