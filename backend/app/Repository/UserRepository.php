@@ -24,6 +24,18 @@ final class UserRepository implements Paginable
         return User::orderBy($sort, $direction)->paginate($perPage, ['*'], null, $page);
     }
 
+    public function paginateByUsersIds(
+        array $usersIds,
+        int $page = self::DEFAULT_PAGE,
+        int $perPage = self::DEFAULT_PER_PAGE,
+        string $sort = self::DEFAULT_SORT,
+        string $direction = self::DEFAULT_DIRECTION
+    ): LengthAwarePaginator {
+        return User::whereIn('id', $usersIds)
+                ->orderBy($sort, $direction)
+                ->paginate($perPage, ['*'], null, $page);
+    }
+
     /**
      * @param int $id
      * @return User

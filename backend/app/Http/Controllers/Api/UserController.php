@@ -6,9 +6,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Action\GetByIdRequest;
 use App\Action\GetCollectionRequest;
+use App\Action\GetUsersCollectionByIdsRequest;
 use App\Action\SendNotificationToUserRequest;
 use App\Action\User\GetUserByIdAction;
 use App\Action\User\GetUserCollectionAction;
+use App\Action\User\GetUsersCollectionByIdsAction;
 use App\Action\User\SendNotificationToUserAction;
 use App\Http\Controllers\ApiController;
 use App\Http\Presenter\UserArrayPresenter;
@@ -22,17 +24,20 @@ final class UserController extends ApiController
     private $presenter;
     private $getUserByIdAction;
     private $sendNotificationToUserAction;
+    private $getUsersCollectionByIdsAction;
 
     public function __construct(
         GetUserCollectionAction $getUserCollectionAction,
         UserArrayPresenter $presenter,
         GetUserByIdAction $getUserByIdAction,
-        SendNotificationToUserAction $sendNotificationToUserAction
+        SendNotificationToUserAction $sendNotificationToUserAction,
+        GetUsersCollectionByIdsAction $getUsersCollectionByIdsAction
     ) {
         $this->getUserCollectionAction = $getUserCollectionAction;
         $this->presenter = $presenter;
         $this->getUserByIdAction = $getUserByIdAction;
         $this->sendNotificationToUserAction = $sendNotificationToUserAction;
+        $this->getUsersCollectionByIdsAction = $getUsersCollectionByIdsAction;
     }
 
     public function getUserCollection(CollectionHttpRequest $request): ApiResponse
@@ -67,5 +72,19 @@ final class UserController extends ApiController
         );
 
         return $this->createSuccessResponse();
+    }
+
+    public function getUsersCollectionByIds(CollectionHttpRequest $request): ApiResponse
+    {
+        $response = $this->getUsersCollectionByIdsAction->execute(
+            new GetUsersCollectionByIdsRequest(
+                $request->get('usersIds'),
+                (int)$request->query('page'),
+                $request->query('sort'),
+                $request->query('direction')
+            )
+        );
+
+        return $this->createPaginatedResponse($response->getPaginator(), $this->presenter);
     }
 }
