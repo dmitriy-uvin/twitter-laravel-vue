@@ -139,7 +139,7 @@ export default {
             'likeOrDislikeComment'
         ]),
         ...mapActions([
-            'getUsersByIds'
+            'getUsersByIdsCollection'
         ]),
         onEditComment() {
             this.isEditCommentModalActive = true;
@@ -180,7 +180,7 @@ export default {
             }
         },
         async openCommentLikedUsersModal() {
-            await this.getUsersByIds(
+            await this.getUsersByIdsCollection(
                 this.comment.likes.map(like => like.userId)
             );
             this.isCommentLikedUsersModal = true;

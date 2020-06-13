@@ -217,7 +217,9 @@ export default {
             'deleteTweet',
             'likeOrDislikeTweet'
         ]),
-        ...mapActions(['getUsersByIds']),
+        ...mapActions([
+            'getUsersByIdsCollection'
+        ]),
         ...mapActions('comment', [
             'fetchComments',
         ]),
@@ -286,10 +288,9 @@ export default {
         },
 
         async openModalLikedUsers() {
-            await this.getUsersByIds(
+            await this.getUsersByIdsCollection(
                 this.tweet.likes.map(item => item.userId)
             );
-
             this.isTweetLikedUsersModal = true;
         },
 
