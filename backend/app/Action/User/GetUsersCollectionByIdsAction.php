@@ -6,6 +6,7 @@ namespace App\Action\User;
 
 
 use App\Action\GetUsersCollectionByIdsRequest;
+use App\Action\PaginatedResponse;
 use App\Repository\UserRepository;
 
 class GetUsersCollectionByIdsAction
@@ -17,18 +18,18 @@ class GetUsersCollectionByIdsAction
         $this->repository = $repository;
     }
 
-    public function execute(GetUsersCollectionByIdsRequest $request)
+    public function execute(GetUsersCollectionByIdsRequest $request): PaginatedResponse
     {
         $usersIds = $request->getUsersIds();
 
-        $users = array_map(
-            function($id) {
-                $user = $this->repository->getById($id);
-                $user->avatar = $user->getAvatar();
-                return $user;
-            },
-        $usersIds);
-
-        return new GetUsersCollectionByIdsResponse($users);
+        return new PaginatedResponse(
+            $this->repository->paginateByUsersIds(
+                $usersIds,
+                $request->getPage() ?: UserRepository::DEFAULT_PAGE,
+                UserRepository::DEFAULT_PER_PAGE,
+                $request->getSort() ?: UserRepository::DEFAULT_SORT,
+                $request->getDirection() ?: UserRepository::DEFAULT_DIRECTION
+            )
+        );
     }
 }

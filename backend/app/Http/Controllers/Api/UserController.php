@@ -85,6 +85,6 @@ final class UserController extends ApiController
             )
         );
 
-        return $this->createSuccessResponse($response->getUsers());
+        return $this->createPaginatedResponse($response->getPaginator(), $this->presenter);
     }
 }
