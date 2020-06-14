@@ -80,6 +80,7 @@ export default {
     methods: {
         ...mapActions('tweet', [
             'fetchTweetsByUserId',
+            'fetchTweets'
         ]),
 
         async infiniteHandler($state) {
@@ -104,6 +105,9 @@ export default {
             }
         },
         async getOnlyLiked() {
+            this.tweets = await this.fetchTweets({
+                page: 1,
+            });
             this.tweets = this.tweets.filter(tweet => this.tweetIsLikedByUser(tweet.id, this.user.id));
         },
         async allTweets() {
