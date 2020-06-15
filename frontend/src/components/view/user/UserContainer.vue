@@ -1,26 +1,19 @@
 <template>
     <div class="user-container">
-        <div class="column">
-            <b-button
-                type="is-primary"
-                icon-left="comments"
-                @click="allTweets"
-            >
-                All Tweets
-            </b-button>
-        </div>
-        <div class="column">
-            <b-button
-                type="is-warning"
-                icon-left="heart"
-                @click="getOnlyLiked"
-            >
-                Liked Tweets
-            </b-button>
-        </div>
+        <b-field label="Type of tweets:">
+            <b-select placeholder="Type of tweets:" v-model="tweetsType">
+                <option value="all">
+                    All Tweets
+                </option>
+                <option value="liked">
+                    Liked Tweets
+                </option>
+            </b-select>
+        </b-field>
 
         <TweetPreviewList
             :tweets="tweets"
+            :loading-id="loadingId"
             @infinite="infiniteHandler"
             :cards-view-seen="cardsViewSeen"
             :media-view-seen="mediaViewSeen"
@@ -28,7 +21,6 @@
         <NoContent :show="noContent" title="No tweets yet :)" />
     </div>
 </template>
-
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import TweetPreviewList from '@/components/common/TweetPreviewList.vue';
@@ -37,23 +29,20 @@ import showStatusToast from '@/components/mixin/showStatusToast';
 
 export default {
     name: 'UserContainer',
-
     mixins: [showStatusToast],
-
     components: {
         TweetPreviewList,
         NoContent
     },
-
     data: () => ({
         tweets: [],
         page: 1,
         noContent: false,
         mediaViewSeen: null,
         cardsViewSeen: null,
-        onlyLiked: false
+        loadingId: +new Date(),
+        tweetsType: 'all'
     }),
-
     async created() {
         try {
             this.tweets = await this.fetchTweetsByUserId({
@@ -75,22 +64,33 @@ export default {
         ]),
         ...mapGetters('auth', {
             user: 'getAuthenticatedUser'
-        })
+        }),
     },
     methods: {
         ...mapActions('tweet', [
             'fetchTweetsByUserId',
-            'fetchTweets'
+            'fetchLikedTweetsByUserId'
         ]),
-
         async infiniteHandler($state) {
             try {
-                const tweets = await this.fetchTweetsByUserId({
-                    userId: this.$route.params.id,
-                    params: {
-                        page: this.page + 1
-                    }
-                });
+                let tweets;
+                if (this.tweetsType === 'all') {
+                    tweets = await this.fetchTweetsByUserId({
+                        userId: this.$route.params.id,
+                        params: {
+                            page: this.page + 1
+                        }
+                    });
+                }
+
+                if (this.tweetsType === 'liked') {
+                    tweets = await this.fetchLikedTweetsByUserId({
+                        userId: this.$route.params.id,
+                        params: {
+                            page: this.page + 1
+                        }
+                    });
+                }
 
                 if (tweets.length) {
                     this.tweets.push(...tweets);
@@ -104,19 +104,29 @@ export default {
                 $state.complete();
             }
         },
-        async getOnlyLiked() {
-            this.tweets = await this.fetchTweets({
-                page: 1,
-            });
-            this.tweets = this.tweets.filter(tweet => this.tweetIsLikedByUser(tweet.id, this.user.id));
-        },
-        async allTweets() {
-            this.tweets = await this.fetchTweetsByUserId({
-                userId: this.$route.params.id,
-                params: {
-                    page: 1
-                }
-            });
+    },
+    watch: {
+        async tweetsType(newTweetsType) {
+            this.tweets = [];
+            this.page = 1;
+            this.loadingId += 1;
+            if (newTweetsType === 'all') {
+                this.tweets = await this.fetchTweetsByUserId({
+                    userId: this.$route.params.id,
+                    params: {
+                        page: 1
+                    }
+                });
+            }
+
+            if (newTweetsType === 'liked') {
+                this.tweets = await this.fetchLikedTweetsByUserId({
+                    userId: this.$route.params.id,
+                    params: {
+                        page: 1
+                    }
+                });
+            }
         }
     },
     mounted() {
