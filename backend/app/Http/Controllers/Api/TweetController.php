@@ -10,6 +10,8 @@ use App\Action\Tweet\AddTweetAction;
 use App\Action\Tweet\AddTweetRequest;
 use App\Action\Tweet\DeleteTweetAction;
 use App\Action\Tweet\DeleteTweetRequest;
+use App\Action\Tweet\GetLikedTweetCollectionByUserIdAction;
+use App\Action\Tweet\GetLikedTweetCollectionByUserIdRequest;
 use App\Action\Tweet\GetTweetByIdAction;
 use App\Action\Tweet\GetTweetCollectionAction;
 use App\Action\Tweet\GetTweetCollectionByUserIdAction;
@@ -32,6 +34,7 @@ final class TweetController extends ApiController
     private $presenter;
     private $getTweetByIdAction;
     private $getTweetCollectionByUserIdAction;
+    private $getLikedTweetCollectionByUserIdAction;
     private $addTweetAction;
     private $updateTweetAction;
     private $uploadTweetImageAction;
@@ -42,6 +45,7 @@ final class TweetController extends ApiController
         TweetArrayPresenter $presenter,
         GetTweetByIdAction $getTweetByIdAction,
         GetTweetCollectionByUserIdAction $getTweetCollectionByUserIdAction,
+        GetLikedTweetCollectionByUserIdAction $getLikedTweetCollectionByUserIdAction,
         AddTweetAction $addTweetAction,
         UpdateTweetAction $updateTweetAction,
         UploadTweetImageAction $uploadTweetImageAction,
@@ -51,6 +55,7 @@ final class TweetController extends ApiController
         $this->presenter = $presenter;
         $this->getTweetByIdAction = $getTweetByIdAction;
         $this->getTweetCollectionByUserIdAction = $getTweetCollectionByUserIdAction;
+        $this->getLikedTweetCollectionByUserIdAction = $getLikedTweetCollectionByUserIdAction;
         $this->addTweetAction = $addTweetAction;
         $this->updateTweetAction = $updateTweetAction;
         $this->uploadTweetImageAction = $uploadTweetImageAction;
@@ -81,6 +86,20 @@ final class TweetController extends ApiController
     {
         $response = $this->getTweetCollectionByUserIdAction->execute(
             new GetTweetCollectionByUserIdRequest(
+                (int)$userId,
+                (int)$request->query('page'),
+                $request->query('sort'),
+                $request->query('direction')
+            )
+        );
+
+        return $this->createPaginatedResponse($response->getPaginator(), $this->presenter);
+    }
+
+    public function getLikedTweetCollectionByUserId(string $userId, CollectionHttpRequest $request): ApiResponse
+    {
+        $response = $this->getLikedTweetCollectionByUserIdAction->execute(
+            new GetLikedTweetCollectionByUserIdRequest(
                 (int)$userId,
                 (int)$request->query('page'),
                 $request->query('sort'),
