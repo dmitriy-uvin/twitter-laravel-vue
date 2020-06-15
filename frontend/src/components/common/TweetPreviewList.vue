@@ -11,7 +11,7 @@
                 />
             </template>
         </transition-group>
-        <infinite-loading @infinite="infiniteHandler">
+        <infinite-loading :identifier="loadingId" @infinite="infiniteHandler">
             <div slot="no-more" />
             <div slot="no-results" />
             <div slot="spinner" />
@@ -36,6 +36,10 @@ export default {
         },
         cardsViewSeen: {
             type: Boolean,
+        },
+        loadingId: {
+            type: Number,
+            required: true
         }
     },
     components: {
