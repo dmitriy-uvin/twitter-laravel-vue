@@ -48,6 +48,24 @@ export default {
         }
     },
 
+    async fetchLikedTweetsByUserId({ commit }, { userId, params }) {
+        commit(SET_LOADING, true, { root: true });
+        try {
+            const tweets = await api.get(`/users/${userId}/tweets/liked`, params);
+
+            commit(SET_TWEETS, tweets);
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.resolve(
+                tweets.map(tweetMapper)
+            );
+        } catch (error) {
+            commit(SET_LOADING, false, { root: true });
+
+            return Promise.reject(error);
+        }
+    },
+
     async fetchTweetById({ commit }, tweetId) {
         commit(SET_LOADING, true, { root: true });
 

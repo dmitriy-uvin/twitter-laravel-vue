@@ -24,6 +24,33 @@ final class TweetRepository implements Paginable
         return Tweet::orderBy($sort, $direction)->paginate($perPage, ['*'], null, $page);
     }
 
+    public function paginateLikedTweets(
+        int $userId,
+        int $page = self::DEFAULT_PAGE,
+        int $perPage = self::DEFAULT_PER_PAGE,
+        string $sort = self::DEFAULT_SORT,
+        string $direction = self::DEFAULT_DIRECTION
+    ): LengthAwarePaginator {
+
+        $likedTweetsIds = Tweet::all()
+            ->map(
+            function($tweet) use ($userId){
+                return $tweet->likes
+                    ->map(
+                        function($like) use ($userId){
+                            return $like->user_id == $userId;
+                        })
+                    ->filter()
+                    ->count() ? $tweet->id : false;
+            })
+            ->filter()
+            ->values();
+
+        return Tweet::whereIn('id', $likedTweetsIds)
+            ->orderBy($sort, $direction)
+            ->paginate($perPage, ['*'], null, $page);
+    }
+
     /**
      * @param int $id
      * @return Tweet

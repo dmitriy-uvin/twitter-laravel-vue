@@ -17,6 +17,19 @@
                     />
                 </p>
             </div>
+
+            <b-field class="file">
+                <b-upload v-model="image">
+                    <a class="button is-warning">
+                        <b-icon pack="fa" icon="upload" />
+                        <span>Upload image</span>
+                    </a>
+                </b-upload>
+                <span class="file-name" v-if="image">
+                    {{ image.name }}
+                </span>
+            </b-field>
+
             <div class="field">
                 <p class="control">
                     <button
@@ -52,6 +65,7 @@ export default {
 
     data: () => ({
         text: '',
+        image: null
     }),
 
     computed: {
@@ -63,6 +77,7 @@ export default {
     methods: {
         ...mapActions('comment', [
             'addComment',
+            'uploadCommentImage'
         ]),
 
         clearInput() {
@@ -70,11 +85,19 @@ export default {
         },
 
         async onPostComment() {
-            await this.addComment({
+            const comment = await this.addComment({
                 tweetId: this.tweetId,
                 text: this.text,
             });
 
+            if (this.image !== null) {
+                await this.uploadCommentImage({
+                    id: comment.id,
+                    imageFile: this.image
+                });
+            }
+
+            this.image = '';
             this.clearInput();
         },
     },
