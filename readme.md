@@ -57,7 +57,7 @@ Installation is described inside backend and frontend folders independently.
 ![Preview](https://i.imgur.com/IMPfHQo.png)
 
 ## Architecture
-- Frontend: SPA -Single Page Application
+- Frontend: SPA - Single Page Application
 - Backend: REST API service
 
 ## Features
@@ -79,4 +79,4 @@ Installation is described inside backend and frontend folders independently.
 
 [MIT license](https://opensource.org/licenses/MIT).
 
-Powered by @binarystudioacademy.
+Powered by @BinaryStudioAcademy.
