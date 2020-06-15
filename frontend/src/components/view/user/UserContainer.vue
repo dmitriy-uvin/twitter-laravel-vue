@@ -110,6 +110,7 @@ export default {
             this.tweets = [];
             this.page = 1;
             this.loadingId += 1;
+            this.noContent = false;
             if (newTweetsType === 'all') {
                 this.tweets = await this.fetchTweetsByUserId({
                     userId: this.$route.params.id,
@@ -117,6 +118,9 @@ export default {
                         page: 1
                     }
                 });
+                if (!this.tweets.length) {
+                    this.noContent = true;
+                }
             }
 
             if (newTweetsType === 'liked') {
@@ -126,6 +130,9 @@ export default {
                         page: 1
                     }
                 });
+                if (!this.tweets.length) {
+                    this.noContent = true;
+                }
             }
         }
     },
