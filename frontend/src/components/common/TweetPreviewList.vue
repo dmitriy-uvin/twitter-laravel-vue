@@ -38,8 +38,7 @@ export default {
             type: Boolean,
         },
         loadingId: {
-            type: Number,
-            required: true
+            type: Number
         }
     },
     components: {
