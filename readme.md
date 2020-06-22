@@ -78,5 +78,3 @@ Installation is described inside backend and frontend folders independently.
 ## License
 
 [MIT license](https://opensource.org/licenses/MIT).
-
-Powered by @BinaryStudioAcademy.
